@@ -4,6 +4,7 @@ import FilePicker from "./components/common/FilePicker";
 import SearchBox from "./components/common/SearchBox";
 import CustomButton from "./components/common/CustomButton";
 import ImportDialog from "./components/Dialogs/ImportDialog";
+import FootballFieldWithPlayerCard from "./components/Field/FootballFieldWithPlayerCard";
 
 const App = () => {
   const [open, setOpen] = useState(false);
@@ -18,6 +19,7 @@ const App = () => {
         />
         <ImportDialog setOpen={setOpen} open={open} />
       </div>
+      <FootballFieldWithPlayerCard />
     </ThemeProvider>
   );
 };
