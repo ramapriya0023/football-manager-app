@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { ThemeProvider } from "./theme/ThemeProvider";
+import FilePicker from "./components/common/FilePicker";
+import SearchBox from "./components/common/SearchBox";
+import CustomButton from "./components/common/CustomButton";
+import ImportDialog from "./components/Dialogs/ImportDialog";
 
-function App() {
+const App = () => {
+  const [open, setOpen] = useState(false);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider>
+      <div>
+        <h1>Football Manager</h1>
+        <CustomButton
+          text={"Import team"}
+          type={"primary"}
+          onClick={() => setOpen(true)}
+        />
+        <ImportDialog setOpen={setOpen} open={open} />
+      </div>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
