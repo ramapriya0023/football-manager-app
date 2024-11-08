@@ -1,5 +1,4 @@
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,22 +11,29 @@ import {
 import colors from "../../constants/colors";
 import CloseIcon from "@mui/icons-material/Close";
 import FilePicker from "../common/FilePicker";
+import CustomButton from "../common/CustomButton";
+import ImportSummary from "./ImportSummary";
 
 const StyledDialog = styled(Dialog)({
-  padding: "20px",
+  padding: "24px",
   border: colors.border.default,
 });
 
-const ImportDialog = ({ setOpen, open }) => {
+const FileContainer = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+});
+
+const ImportDialog = ({ setImportOpen, importOpen }) => {
   const handleClose = () => {
-    setOpen(false);
+    setImportOpen(false);
   };
   return (
     <StyledDialog
       onClose={handleClose}
       aria-labelledby="customized-dialog-title"
-      open={open}
-      maxWidth="lg"
+      open={importOpen}
+      maxWidth="md"
       fullWidth
     >
       <DialogTitle
@@ -41,36 +47,44 @@ const ImportDialog = ({ setOpen, open }) => {
       >
         Importer
       </DialogTitle>
-      <Divider variant="middle" />
+      <Divider variant="fullWidth" sx={{ background: colors.border.default }} />
       <IconButton
         aria-label="close"
         onClick={handleClose}
-        sx={(theme) => ({
+        sx={{
           position: "absolute",
           right: 8,
           top: 8,
           color: colors.text.normal,
-        })}
+        }}
       >
         <CloseIcon />
       </IconButton>
-      <DialogContent dividers sx={{ background: colors.neutral.background2 }}>
-        <Typography gutterBottom sx={{ color: colors.text.heading }}>
-          Roster File
-        </Typography>
-        <FilePicker />
-        <Typography sx={{ color: colors.text.muted }}>
-          File must be in .csv format
-        </Typography>
+      <DialogContent
+        dividers
+        sx={{
+          background: colors.neutral.background2,
+          height: "60vh",
+          gap: "50px",
+          display: "flex",
+          flexDirection: "column",
+          padding: "20px",
+        }}
+      >
+        <FileContainer>
+          <Typography gutterBottom sx={{ color: colors.text.heading }}>
+            Roster File
+          </Typography>
+          <FilePicker />
+        </FileContainer>
+        <ImportSummary />
       </DialogContent>
       <DialogActions sx={{ background: colors.neutral.background2 }}>
-        <Button
-          autoFocus
+        <CustomButton
+          type={"secondary"}
           onClick={handleClose}
-          sx={{ color: colors.text.muted }}
-        >
-          Import
-        </Button>
+          text={"Import"}
+        />
       </DialogActions>
     </StyledDialog>
   );

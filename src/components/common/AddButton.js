@@ -27,7 +27,7 @@ const SecondaryButton = styled(Button)({
   borderColor: colors.border.default,
 });
 
-const CustomButton = ({ disabled = false, onClick, type }) => {
+const AddButton = ({ disabled = false, onClick, type }) => {
   return type === "primary" ? (
     <PrimaryButton variant="contained" disabled={disabled} onClick={onClick}>
       <AddOutlinedIcon />
@@ -39,4 +39,4 @@ const CustomButton = ({ disabled = false, onClick, type }) => {
   );
 };
 
-export default CustomButton;
+export default AddButton;

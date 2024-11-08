@@ -20,38 +20,50 @@ const StyledSelect = styled(Select)({
   padding: "12px 16px 11px 16px",
   borderRadius: "8px",
   border: `1px solid ${colors.border.default}`,
-  justify: "space-between",
-  background: colors.neutral.background1,
+  background: colors.neutral.background2,
+  color: colors.text.heading,
   "& .MuiSelect-icon": {
     color: "white",
   },
-  "& .MuiSelect-root": {
-    border: "none",
-  },
 });
 
-const DropdownSelect = ({}) => {
-  const [age, setAge] = useState("");
-
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
+const DropdownSelect = ({
+  options = [],
+  value,
+  placeholder = "Select an option",
+  onChange,
+}) => {
   return (
     <StyledSelect
-      value={age}
-      onChange={handleChange}
+      value={value}
+      onChange={onChange}
       renderValue={(selected) => {
-        if (selected.length === 0) {
-          return <Placeholder>Placeholder</Placeholder>;
+        if (!selected) {
+          return <Placeholder>{placeholder}</Placeholder>;
         }
         return selected;
       }}
+      sx={{
+        "&.Mui-focused": {
+          border: "none !important",
+        },
+      }}
       displayEmpty
       inputProps={{ "aria-label": "Without label" }}
+      MenuProps={{
+        sx: {
+          "& .MuiMenu-paper": {
+            background: colors.neutral.background2,
+            color: colors.text.heading,
+          },
+        },
+      }}
     >
-      <MenuItem value={10}>Ten</MenuItem>
-      <MenuItem value={20}>Twenty</MenuItem>
-      <MenuItem value={30}>Thirty</MenuItem>
+      {options.map((option, index) => (
+        <MenuItem key={index} value={option.value}>
+          {option.label}
+        </MenuItem>
+      ))}
     </StyledSelect>
   );
 };

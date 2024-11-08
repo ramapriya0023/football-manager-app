@@ -1,24 +1,20 @@
-import React, { useState } from "react";
-import { ThemeProvider } from "./theme/ThemeProvider";
-import FilePicker from "./components/common/FilePicker";
-import SearchBox from "./components/common/SearchBox";
-import CustomButton from "./components/common/CustomButton";
-import ImportDialog from "./components/Dialogs/ImportDialog";
+import React from "react";
+import ImportListLayout from "./layout/ImportListLayout";
+import { MantineProvider } from "@mantine/core";
 
 const App = () => {
-  const [open, setOpen] = useState(false);
   return (
-    <ThemeProvider>
+    <MantineProvider
+      theme={{
+        primaryColor: "gray",
+        primaryShade: 7,
+      }}
+      forceColorScheme="dark"
+    >
       <div>
-        <h1>Football Manager</h1>
-        <CustomButton
-          text={"Import team"}
-          type={"primary"}
-          onClick={() => setOpen(true)}
-        />
-        <ImportDialog setOpen={setOpen} open={open} />
+        <ImportListLayout />
       </div>
-    </ThemeProvider>
+    </MantineProvider>
   );
 };
 

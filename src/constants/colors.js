@@ -7,6 +7,7 @@ const colors = {
   neutral: {
     background1: "#222222",
     background2: "#2D2D2D",
+    black: "#111111",
   },
   text: {
     heading: "#F8F8F8",

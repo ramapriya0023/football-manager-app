@@ -7,20 +7,28 @@ const InputContainer = styled("input")({
   padding: "12px 16px 11px 16px",
   borderRadius: "8px",
   border: `1px solid ${colors.border.default}`,
-  color: colors.text.muted,
-  background: colors.neutral.background1,
-  "&:hover": {
-    color: colors.text.heading,
+  "&:focus": {
+    border: `1px solid ${colors.border.default}`,
+    outline: "none",
   },
+  color: colors.text.heading,
+  background: colors.neutral.background2,
 });
 
-const Input = ({ label, disabled = false, placeholder }) => {
+const Input = ({
+  value,
+  onChange,
+  disabled = false,
+  placeholder,
+  type = "text",
+}) => {
   return (
     <InputContainer
       disabled={disabled}
-      value={label}
-      type="text"
+      value={value}
+      type={type}
       placeholder={placeholder}
+      onChange={onChange}
     />
   );
 };
