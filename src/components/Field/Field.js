@@ -30,12 +30,20 @@ const Field = ({ players, onPlayerClick }) => {
             style={{
               backgroundColor: "#333",
               color: "#fff",
-              padding: "4px",
+              padding: "8px",
               borderRadius: "50%",
+              border: "2px solid #fff", // Thin white border
+              width: "32px", // Make the circle size consistent
+              height: "32px", // Ensure it's a perfect circle
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "25px", // Adjust font size if needed
             }}
           >
             {player.number}
           </div>
+
           <div style={{ fontSize: "0.8rem", color: "white", marginTop: "4px" }}>
             {player.name}
           </div>

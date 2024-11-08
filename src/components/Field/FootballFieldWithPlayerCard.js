@@ -5,13 +5,13 @@ import PlayerCard from "./PlayerCard";
 const FootballFieldWithPlayerCard = () => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
-  // Define player details and fixed positions for a 4-3-3 formation (Horizontal)
+  // Define player details and new positions for a 4-3-3 formation (Horizontal)
   const players = [
     {
       id: 1,
       name: "Keylor Navas",
       number: 1,
-      position: { top: "90%", left: "10%" }, // Goalkeeper at bottom left
+      position: { top: "50%", left: "5%" }, // Goalkeeper in center-left
       role: "Goalkeeper",
       height: "1.85 m",
       weight: "80 kg",
@@ -26,7 +26,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 2,
       name: "Achraf Hakimi",
       number: 2,
-      position: { top: "65%", left: "20%" }, // Right Back
+      position: { top: "30%", left: "15%" }, // Right Back
       role: "Right Back",
       height: "1.81 m",
       weight: "70 kg",
@@ -41,7 +41,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 3,
       name: "Sergio Ramos",
       number: 4,
-      position: { top: "65%", left: "35%" }, // Right Center Back
+      position: { top: "40%", left: "20%" }, // Right Center Back
       role: "Right Center Back",
       height: "1.84 m",
       weight: "82 kg",
@@ -56,7 +56,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 4,
       name: "Presnel Kimpembe",
       number: 3,
-      position: { top: "65%", left: "50%" }, // Left Center Back
+      position: { top: "60%", left: "20%" }, // Left Center Back
       role: "Left Center Back",
       height: "1.83 m",
       weight: "77 kg",
@@ -71,7 +71,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 5,
       name: "Marquinhos",
       number: 5,
-      position: { top: "65%", left: "65%" }, // Left Back
+      position: { top: "70%", left: "15%" }, // Left Back
       role: "Left Back",
       height: "1.83 m",
       weight: "75 kg",
@@ -86,7 +86,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 6,
       name: "Marco Verratti",
       number: 6,
-      position: { top: "50%", left: "30%" }, // Center Midfielder
+      position: { top: "30%", left: "40%" }, // Center Midfielder (Higher Center)
       role: "Center Midfielder",
       height: "1.65 m",
       weight: "60 kg",
@@ -101,7 +101,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 7,
       name: "Danilo Pereira",
       number: 15,
-      position: { top: "50%", left: "20%" }, // Defensive Midfielder
+      position: { top: "50%", left: "35%" }, // Defensive Midfielder (Center)
       role: "Defensive Midfielder",
       height: "1.88 m",
       weight: "83 kg",
@@ -116,7 +116,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 8,
       name: "Angel Di Maria",
       number: 11,
-      position: { top: "50%", left: "10%" }, // Left Midfielder
+      position: { top: "70%", left: "40%" }, // Left Midfielder (Lower Center)
       role: "Left Midfielder",
       height: "1.80 m",
       weight: "70 kg",
@@ -131,7 +131,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 9,
       name: "Lionel Messi",
       number: 30,
-      position: { top: "30%", left: "20%" }, // Right Forward
+      position: { top: "30%", left: "60%" }, // Right Forward
       role: "Right Forward",
       height: "1.70 m",
       weight: "72 kg",
@@ -146,7 +146,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 10,
       name: "Neymar Jr",
       number: 10,
-      position: { top: "30%", left: "40%" }, // Left Forward
+      position: { top: "70%", left: "60%" }, // Left Forward
       role: "Left Forward",
       height: "1.75 m",
       weight: "68 kg",
@@ -161,7 +161,7 @@ const FootballFieldWithPlayerCard = () => {
       id: 11,
       name: "Kylian Mbappé",
       number: 7,
-      position: { top: "20%", left: "30%" }, // Center Forward
+      position: { top: "50%", left: "75%" }, // Center Forward
       role: "Center Forward",
       height: "1.78 m",
       weight: "73 kg",
