@@ -11,6 +11,7 @@ import EditIcon from "../../assets/icons/EditIcon";
 import DeleteIcon from "../../assets/icons/DeleteIcon";
 import DeleteDialog from "../Dialogs/DeleteDialog";
 import EditDialog from "../Dialogs/EditDialog";
+import { IconCaretDownFilled, IconPlus } from "@tabler/icons-react";
 
 const MenuHeader = styled(Typography)({
   display: "flex",
@@ -217,6 +218,15 @@ const FileImportGrid = () => {
         enableFullScreenToggle={false}
         enableGlobalFilter={false}
         enableRowActions
+        positionActionsColumn="last"
+        positionPagination="top"
+        enableBottomToolbar={false}
+        enableColumnOrdering={false}
+        enableColumnFilters={false}
+        icons={{
+          IconDotsVertical: IconCaretDownFilled, // Replace default column action icon
+          IconColumns: IconPlus,
+        }}
         renderRowActionMenuItems={() => (
           <div sx={{ padding: "16px" }}>
             <MenuHeader>Actions</MenuHeader>

@@ -1,5 +1,5 @@
 import React from "react";
-import ImportListLayout from "./layout/ImportListLayout";
+import PageLayout from "./layout/PageLayout";
 import { MantineProvider } from "@mantine/core";
 
 const App = () => {
@@ -12,7 +12,7 @@ const App = () => {
       forceColorScheme="dark"
     >
       <div>
-        <ImportListLayout />
+        <PageLayout />
       </div>
     </MantineProvider>
   );

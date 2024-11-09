@@ -32,11 +32,11 @@ const PageTitle = styled(Typography)(({ imported }) => ({
   marginRight: "8px",
 }));
 
-const MainPageHeader = styled("div")({
+const ContentPageLayoutHeader = styled("div")({
   display: "flex",
   alignItems: "center",
 });
-const FileNameHeader = styled("div")({
+const NavigationHeader = styled("div")({
   display: "flex",
   alignItems: "center",
 });
@@ -65,36 +65,55 @@ const IconContainer = styled("div")({
   alignItems: "center",
 });
 
-const ActionBar = ({ setImportOpen }) => {
-  const [isImported, setIsImported] = useState(true);
+const ImportNavigation = styled("div")({
+  display: "flex",
+  alignItems: "center",
+  cursor: "pointer",
+});
+const FileNavigation = styled("div")({
+  display: "flex",
+  alignItems: "center",
+  cursor: "pointer",
+});
+
+const ActionBar = ({
+  setImportOpen,
+  isImported,
+  setShowImportedFiles,
+  showImportedFiles,
+}) => {
   return (
     <HeaderContainer position="fixed" elevation={0}>
       {isImported ? (
-        <FileNameHeader>
-          <ImportIcon type={"CompletedImportIcon"} />
-          <PageTitle imported={isImported}>Import List</PageTitle>
+        <NavigationHeader>
+          <ImportNavigation onClick={() => setShowImportedFiles(true)}>
+            <ImportIcon type={"CompletedImportIcon"} />
+            <PageTitle imported={isImported}>Import List</PageTitle>
+          </ImportNavigation>
           <IconContainer>
             <ChevronRightIcon />
           </IconContainer>
           <FileNameContainer>
-            <IconContainer>
-              <MenuIcon />
-            </IconContainer>
-            <FileName>{"fileName"}</FileName>
+            <FileNavigation onClick={() => setShowImportedFiles(false)}>
+              <IconContainer>
+                <MenuIcon />
+              </IconContainer>
+              <FileName>{"fileName"}</FileName>
+            </FileNavigation>
             <IconButton>
               <EditIcon />
             </IconButton>
           </FileNameContainer>
-        </FileNameHeader>
+        </NavigationHeader>
       ) : (
-        <MainPageHeader>
+        <ContentPageLayoutHeader>
           <ImportIcon type={"PendingImportIcon"} />
           <PageTitle>Import List</PageTitle>
-        </MainPageHeader>
+        </ContentPageLayoutHeader>
       )}
       <ToolbarActions>
         <SearchBox label={"Find Roster"} />
-        {isImported ? (
+        {isImported && !showImportedFiles ? (
           <TabComponent />
         ) : (
           <CustomButton
