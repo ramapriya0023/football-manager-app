@@ -10,6 +10,7 @@ import ContentPageLayout from "./ContentPageLayout";
 const PageLayout = () => {
   const [importOpen, setImportOpen] = useState(false);
   const [isImported, setIsImported] = useState(true);
+  const [selectedView, setSelectedView] = useState("roster");
   const [showImportedFiles, setShowImportedFiles] = useState(false);
 
   return (
@@ -26,6 +27,8 @@ const PageLayout = () => {
         isImported={isImported}
         setShowImportedFiles={setShowImportedFiles}
         showImportedFiles={showImportedFiles}
+        setSelectedView={setSelectedView}
+        selectedView={selectedView}
       />
       <SideNavigationBar />
       <ContentPageLayout
@@ -34,6 +37,7 @@ const PageLayout = () => {
         isImported={isImported}
         setIsImported={setIsImported}
         showImportedFiles={showImportedFiles}
+        selectedView={selectedView}
       />
     </Box>
   );

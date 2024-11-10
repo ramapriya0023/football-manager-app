@@ -81,6 +81,8 @@ const ActionBar = ({
   isImported,
   setShowImportedFiles,
   showImportedFiles,
+  selectedView,
+  setSelectedView,
 }) => {
   return (
     <HeaderContainer position="fixed" elevation={0}>
@@ -114,7 +116,10 @@ const ActionBar = ({
       <ToolbarActions>
         <SearchBox label={"Find Roster"} />
         {isImported && !showImportedFiles ? (
-          <TabComponent />
+          <TabComponent
+            selectedView={selectedView}
+            setSelectedView={setSelectedView}
+          />
         ) : (
           <CustomButton
             type={"primary"}

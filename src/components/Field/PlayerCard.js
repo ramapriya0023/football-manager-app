@@ -1,12 +1,5 @@
-import React from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Paper,
-  Divider,
-  Box,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, Typography, Paper, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Player_Image from "../../assets/images/Player_Image.png";
 import colors from "../../constants/colors";
@@ -14,7 +7,6 @@ import colors from "../../constants/colors";
 const StyledCard = styled(Card)({
   width: "30%",
   backgroundColor: "#1f1f1f",
-  color: "#fff",
   borderRadius: "15px",
   display: "flex",
   overflow: "hidden",
@@ -23,27 +15,15 @@ const StyledCard = styled(Card)({
   gap: "30px",
 });
 
-// const PlayerHeader = styled("div")({
-//   display: "flex",
-//   flexDirection: "column",
-// });
-
-// const ImageContainer = styled(Box)({
-//   width: "274px",
-//   height: "258px",
-//   background:
-//     "linear-gradient(180deg, rgba(34, 34, 34, 0) 0%, rgba(34, 34, 34, 0.38) 60.94%, #222222 100%)",
-// });
-
-const ImageContainer = styled(Box)({
+const ImageContainer = styled(Box)(({ backgroundImage }) => ({
   position: "relative",
-  //width: "274px",
   height: "100%",
   borderRadius: "10px",
   overflow: "hidden",
-  backgroundImage: `url(${Player_Image})`,
-  backgroundSize: "cover",
+  backgroundImage: `url(${backgroundImage})`,
+  backgroundSize: "contain",
   backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
   "&::after": {
     content: '""',
     position: "absolute",
@@ -55,26 +35,19 @@ const ImageContainer = styled(Box)({
       "linear-gradient(transparent, rgba(34, 34, 34, 1) 80%, #222222)",
     borderRadius: "10px",
   },
-});
+}));
 
 const PlayerHeader = styled("div")({
   position: "absolute",
   bottom: "10px",
   left: "20px",
-  color: "#fff",
   zIndex: 1,
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
 });
 
-// const FadedImage = styled("img")({
-//   width: "274px",
-//   height: "278px",
-// });
-
 const Name = styled(Typography)({
-  display: "flex",
   fontSize: "24px",
   fontWeight: 500,
   color: colors.text.heading,
@@ -128,24 +101,33 @@ const PlayerNumberContainer = styled("div")({
 
 const PlayerNumber = styled("div")({
   fontWeight: 600,
-  fontSize: "41px", // Actual text size
+  fontSize: "41px",
   color: colors.primary.yellow,
-  position: "relative", // To position the shadow element relative to the text
+  position: "relative",
   zIndex: 2,
 });
 
 const PlayerNumberShadow = styled("div")({
   fontWeight: 600,
-  fontSize: "110px", // Shadow text size
-  color: "rgba(58, 55, 49, 0.5)", // Shadow color (black with opacity)
+  fontSize: "110px",
+  color: "rgba(58, 55, 49, 0.5)",
   position: "absolute",
-  top: "-62px", // Align the shadow exactly with the original text
-  left: "-40px", // Align the shadow exactly with the original text
-  zIndex: 1, // Ensure the shadow stays behind the text
+  top: "-62px",
+  left: "-40px",
+  zIndex: 1,
 });
-
 const PlayerCard = ({ player }) => {
-  if (!player)
+  const [imageSrc, setImageSrc] = useState(Player_Image);
+
+  useEffect(() => {
+    setImageSrc(player?.playerImg);
+  }, [player]);
+
+  const handleImageError = () => {
+    setImageSrc(Player_Image);
+  };
+
+  if (!player) {
     return (
       <Paper
         style={{
@@ -159,20 +141,26 @@ const PlayerCard = ({ player }) => {
         Select a player
       </Paper>
     );
-
+  }
+  console.log({ imageSrc });
   return (
     <StyledCard elevation={4}>
-      <ImageContainer>
+      <ImageContainer backgroundImage={imageSrc}>
+        <img
+          src={imageSrc}
+          alt={player.playerName}
+          style={{ display: "none" }}
+          onError={handleImageError}
+        />
         <PlayerNumberContainer>
-          <PlayerNumberShadow>{player.number}</PlayerNumberShadow>{" "}
-          {/* Shadow with larger font */}
-          <PlayerNumber>{player.number}</PlayerNumber> {/* Actual text */}
+          <PlayerNumberShadow>{player.jerseyNumber}</PlayerNumberShadow>
+          <PlayerNumber>{player.jerseyNumber}</PlayerNumber>
         </PlayerNumberContainer>
         <PlayerHeader>
           <Name variant="h5" component="h2">
-            {player.name}
+            {player.playerName}
           </Name>
-          <Role>{player.role}</Role>
+          <Role>{player.position}</Role>
         </PlayerHeader>
       </ImageContainer>
 

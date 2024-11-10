@@ -32,14 +32,12 @@ const TabIcon = styled("span")({
   alignItems: "center",
 });
 
-const TabComponent = () => {
-  const [selectedTab, setSelectedTab] = useState("roster");
-
+const TabComponent = ({ selectedView, setSelectedView }) => {
   return (
     <TabContainer>
       <Tab
-        selected={selectedTab === "roster"}
-        onClick={() => setSelectedTab("roster")}
+        selected={selectedView === "roster"}
+        onClick={() => setSelectedView("roster")}
       >
         <TabIcon>
           <TableListIcon />
@@ -47,8 +45,8 @@ const TabComponent = () => {
         <Typography>Roster Details</Typography>
       </Tab>
       <Tab
-        selected={selectedTab === "formation"}
-        onClick={() => setSelectedTab("formation")}
+        selected={selectedView === "formation"}
+        onClick={() => setSelectedView("formation")}
       >
         <TabIcon>
           <WidgetIcon />

@@ -1,5 +1,5 @@
 import { Box, Toolbar, Typography } from "@mui/material";
-import ImportDialog from "../components/Dialogs/ImportDialog";
+import ImportModal from "../components/Modals/ImportModal";
 import colors from "../constants/colors";
 import FileImportGrid from "../components/DataGrids/FileImportGrid";
 import PlayersFormationOverview from "../components/Players/PlayersFormationOverview";
@@ -10,6 +10,7 @@ const ContentPageLayout = ({
   isImported,
   setIsImported,
   showImportedFiles,
+  selectedView,
 }) => {
   console.log({ showImportedFiles });
   return (
@@ -25,8 +26,14 @@ const ContentPageLayout = ({
       }}
     >
       <Toolbar sx={{ height: "70px" }} />
-      <ImportDialog importOpen={importOpen} setImportOpen={setImportOpen} />
-      {showImportedFiles ? <FileImportGrid /> : <PlayersFormationOverview />}
+      <ImportModal importOpen={importOpen} setImportOpen={setImportOpen} />
+      {showImportedFiles ? (
+        <FileImportGrid />
+      ) : selectedView === "roster" ? (
+        <FileImportGrid />
+      ) : (
+        <PlayersFormationOverview />
+      )}
     </Box>
   );
 };

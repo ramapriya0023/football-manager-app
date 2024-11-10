@@ -39,7 +39,7 @@ const DeleteButton = styled(Button)({
   borderRadius: "8px",
 });
 
-const DeleteDialog = ({ isDeleteDialogOpen, handleDelete, handleClose }) => {
+const DeleteModal = ({ isDeleteDialogOpen, handleDelete, handleClose }) => {
   return (
     <DialogContainer open={isDeleteDialogOpen} maxWidth="xs" fullWidth>
       <StyledDialogTitle>{"Are you sure?"}</StyledDialogTitle>
@@ -69,4 +69,4 @@ const DeleteDialog = ({ isDeleteDialogOpen, handleDelete, handleClose }) => {
   );
 };
 
-export default DeleteDialog;
+export default DeleteModal;

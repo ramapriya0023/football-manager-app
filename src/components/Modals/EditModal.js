@@ -41,7 +41,7 @@ const Label = styled(Typography)({
   marginBottom: "8px",
 });
 
-const EditDialog = ({ isEditDialogOpen, handleEdit, handleClose }) => {
+const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
   const [playerDetails, setPlayerDetails] = useState({
     playerName: "",
     jerseyNumber: "",
@@ -81,7 +81,15 @@ const EditDialog = ({ isEditDialogOpen, handleEdit, handleClose }) => {
   };
 
   return (
-    <DialogContainer open={isEditDialogOpen} maxWidth="xl">
+    <DialogContainer
+      open={isEditDialogOpen}
+      maxWidth="xl"
+      slotProps={{
+        backdrop: {
+          style: { backgroundColor: "transparent", pointerEvents: "none" },
+        },
+      }}
+    >
       <StyledDialogTitle>{"Edit Player"}</StyledDialogTitle>
       <IconButton
         sx={{
@@ -213,4 +221,4 @@ const EditDialog = ({ isEditDialogOpen, handleEdit, handleClose }) => {
   );
 };
 
-export default EditDialog;
+export default EditModal;

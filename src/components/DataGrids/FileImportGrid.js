@@ -9,8 +9,8 @@ import colors from "../../constants/colors";
 import { styled, Typography } from "@mui/material";
 import EditIcon from "../../assets/icons/EditIcon";
 import DeleteIcon from "../../assets/icons/DeleteIcon";
-import DeleteDialog from "../Dialogs/DeleteDialog";
-import EditDialog from "../Dialogs/EditDialog";
+import DeleteModal from "../Modals/DeleteModal";
+import EditModal from "../Modals/EditModal";
 import { IconCaretDownFilled, IconPlus } from "@tabler/icons-react";
 
 const MenuHeader = styled(Typography)({
@@ -178,7 +178,7 @@ const FileImportGrid = () => {
         header: "Last Name",
       },
       {
-        accessorKey: "address", //normal accessorKey
+        accessorKey: "address",
         header: "Address",
       },
       {
@@ -359,12 +359,12 @@ const FileImportGrid = () => {
           },
         }}
       />
-      <DeleteDialog
+      <DeleteModal
         isDeleteDialogOpen={isDeleteDialogOpen}
         handleDelete={handleDelete}
         handleClose={handleClose}
       />
-      <EditDialog
+      <EditModal
         isEditDialogOpen={isEditDialogOpen}
         handleEdit={handleEdit}
         handleClose={handleClose}

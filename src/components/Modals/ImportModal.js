@@ -24,7 +24,7 @@ const FileContainer = styled("div")({
   flexDirection: "column",
 });
 
-const ImportDialog = ({ setImportOpen, importOpen }) => {
+const ImportModal = ({ setImportOpen, importOpen }) => {
   const handleClose = () => {
     setImportOpen(false);
   };
@@ -90,4 +90,4 @@ const ImportDialog = ({ setImportOpen, importOpen }) => {
   );
 };
 
-export default ImportDialog;
+export default ImportModal;
