@@ -1,4 +1,3 @@
-import ListItemIcon from "@mui/material/ListItemIcon";
 import { Divider, Drawer, List, ListItem } from "@mui/material";
 import FootballLogo from "../../assets/icons/FootballLogo";
 import ImportIcon from "../../assets/icons/ImportIcon";

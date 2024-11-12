@@ -1,17 +1,21 @@
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import { Button, styled, Typography } from "@mui/material";
+import { IconCaretDownFilled } from "@tabler/icons-react";
+import {
+  MantineReactTable,
+  MRT_ShowHideColumnsButton,
+  MRT_TablePagination,
+} from "mantine-react-table";
 import "mantine-react-table/styles.css";
-import { Fragment, useMemo, useState } from "react";
-import { MantineReactTable } from "mantine-react-table";
-import { Menu } from "@mantine/core";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Fragment, useEffect, useState } from "react";
+import { getFiles, deleteFile } from "../../services/FileApiService";
 import colors from "../../constants/colors";
-import { styled, Typography } from "@mui/material";
-import EditIcon from "../../assets/icons/EditIcon";
-import DeleteIcon from "../../assets/icons/DeleteIcon";
 import DeleteModal from "../Modals/DeleteModal";
-import EditModal from "../Modals/EditModal";
-import { IconCaretDownFilled, IconPlus } from "@tabler/icons-react";
+import { useRoster } from "../../providers/RosterProvider";
+import CloseIcon from "../../assets/icons/CloseIcon";
+import ChevronUpIcon from "../../assets/icons/ChevronUpIcon";
+import ChevronDownIcon from "../../assets/icons/ChevronDownIcon";
 
 const MenuHeader = styled(Typography)({
   display: "flex",
@@ -28,187 +32,104 @@ const Item = styled("div")({
   gap: "8px",
   padding: "8px",
 });
-const data = [
-  {
-    name: {
-      firstName: "Zachary",
-      lastName: "Davis",
-    },
-    address: "261 Battle Ford",
-    city: "Columbus",
-    state: "Ohio",
-  },
-  {
-    name: {
-      firstName: "Robert",
-      lastName: "Smith",
-    },
-    address: "566 Brakus Inlet",
-    city: "Westerville",
-    state: "West Virginia",
-  },
-  {
-    name: {
-      firstName: "Kevin",
-      lastName: "Yan",
-    },
-    address: "7777 Kuhic Knoll",
-    city: "South Linda",
-    state: "West Virginia",
-  },
-  {
-    name: {
-      firstName: "John",
-      lastName: "Upton",
-    },
-    address: "722 Emie Stream",
-    city: "Huntington",
-    state: "Washington",
-  },
-  {
-    name: {
-      firstName: "Nathan",
-      lastName: "Harris",
-    },
-    address: "1 Kuhic Knoll",
-    city: "Ohiowa",
-    state: "Nebraska",
-  },
-  {
-    name: {
-      firstName: "Nathan1",
-      lastName: "Harris1",
-    },
-    address: "1 Kuhic Knoll1",
-    city: "Ohiowa1",
-    state: "Nebraska1",
-  },
-  {
-    name: {
-      firstName: "Nathan1",
-      lastName: "Harris1",
-    },
-    address: "1 Kuhic Knoll1",
-    city: "Ohiowa1",
-    state: "Nebraska1",
-  },
-  {
-    name: {
-      firstName: "Nathan1",
-      lastName: "Harris1",
-    },
-    address: "1 Kuhic Knoll1",
-    city: "Ohiowa1",
-    state: "Nebraska1",
-  },
-  {
-    name: {
-      firstName: "Nathan1",
-      lastName: "Harris1",
-    },
-    address: "1 Kuhic Knoll1",
-    city: "Ohiowa1",
-    state: "Nebraska1",
-  },
-  {
-    name: {
-      firstName: "Nathan1",
-      lastName: "Harris1",
-    },
-    address: "1 Kuhic Knoll1",
-    city: "Ohiowa1",
-    state: "Nebraska1",
-  },
-  {
-    name: {
-      firstName: "Nathan1",
-      lastName: "Harris1",
-    },
-    address: "1 Kuhic Knoll1",
-    city: "Ohiowa1",
-    state: "Nebraska1",
-  },
-  {
-    name: {
-      firstName: "Nathan1",
-      lastName: "Harris1",
-    },
-    address: "1 Kuhic Knoll1",
-    city: "Ohiowa1",
-    state: "Nebraska1",
-  },
-  {
-    name: {
-      firstName: "Nathan1",
-      lastName: "Harris1",
-    },
-    address: "1 Kuhic Knoll1",
-    city: "Ohiowa1",
-    state: "Nebraska1",
-  },
-];
 
-const FileImportGrid = () => {
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+const FileImportGrid = ({ selectedRow, setSelectedRow }) => {
+  const [data, setData] = useState([]);
+  const [allData, setAllData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "name.firstName",
-        header: "First Name",
-        // cellRenderer: ({ row }) => (
-        //   <td style={{ backgroundColor: "lightgray" }}>
-        //     {row.getValue("name.firstName")}
-        //   </td>
-        // ),
-        // Header: (
-        //   <div
-        //     style={{
-        //       color: colors.text.normal,
-        //       background: colors.neutral.background2,
-        //     }}
-        //   >
-        //     Age
-        //   </div>
-        // ),
+  const {
+    updateRosterName,
+    updateViewLayout,
+    setShowImportedFiles,
+    updateIsFileImported,
+    showImportedFiles,
+    searchValue,
+    updateFileId,
+  } = useRoster();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getFiles();
+        console.log({ response });
+        if (response.length === 0) {
+          updateIsFileImported(false);
+        }
+        setShowImportedFiles(true);
+        updateIsFileImported(true);
+        setAllData(response);
+        setData(response);
+        console.log("testing1");
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching files:", error);
+      } finally {
+        console.log("testing2");
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [showImportedFiles]);
+
+  useEffect(() => {
+    const filteredData = allData.filter((item) =>
+      item.fileName.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setData(filteredData);
+  }, [searchValue, allData]);
+
+  const columns = [
+    {
+      accessorKey: "fileName",
+      header: "Roster Name",
+
+      size: 400,
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Import Date",
+      Cell: ({ cell }) => {
+        const date = new Date(cell.getValue());
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
       },
-      {
-        accessorKey: "name.lastName",
-        header: "Last Name",
-      },
-      {
-        accessorKey: "address",
-        header: "Address",
-      },
-      {
-        accessorKey: "city",
-        header: "City",
-      },
-      {
-        accessorKey: "state",
-        header: "State",
-      },
-    ],
-    []
-  );
+    },
+  ];
 
   const handleClose = () => {
     setIsDeleteDialogOpen(false);
-    setIsEditDialogOpen(false);
-    console.log("Closing");
   };
-
-  const handleEdit = (row) => {
-    setIsEditDialogOpen(true);
-    console.log("Edit row:", row);
+  const handleDeleteOnClick = (row) => {
+    setSelectedRow(row.row.original);
+    setIsDeleteDialogOpen(true);
   };
 
   const handleDelete = (row) => {
-    setIsDeleteDialogOpen(true);
-    console.log("Delete row:", row);
+    deleteFile(selectedRow.id).then(() => {
+      setAllData((prev) => prev.filter((file) => file.id !== selectedRow.id));
+    });
+    handleClose();
   };
 
+  const handleRowClick = (row) => {
+    console.log({ row });
+    if (!isDeleteDialogOpen) {
+      setSelectedRow(row.original);
+      updateViewLayout("roster");
+      setShowImportedFiles(false);
+      updateRosterName(row.original.fileName);
+      updateFileId(row.original.id);
+    }
+  };
+  console.log({ isLoading });
   return (
     <Fragment>
       <MantineReactTable
@@ -218,156 +139,160 @@ const FileImportGrid = () => {
         enableFullScreenToggle={false}
         enableGlobalFilter={false}
         enableRowActions
+        enableToolbarInternalActions={false}
         positionActionsColumn="last"
         positionPagination="top"
         enableBottomToolbar={false}
         enableColumnOrdering={false}
         enableColumnFilters={false}
-        icons={{
-          IconDotsVertical: IconCaretDownFilled, // Replace default column action icon
-          IconColumns: IconPlus,
-        }}
-        renderRowActionMenuItems={() => (
-          <div sx={{ padding: "16px" }}>
-            <MenuHeader>Actions</MenuHeader>
-            <Menu.Item onClick={() => handleEdit()}>
-              <Item>
-                <EditIcon />
-                <Typography>Edit Player</Typography>
-              </Item>
-            </Menu.Item>
-            <Menu.Item onClick={() => handleDelete()}>
-              <Item>
-                <DeleteIcon />
-                <Typography>Delete Player</Typography>
-              </Item>
-            </Menu.Item>
-          </div>
-        )}
-        //   mantineTableBodyRowProps={{
-        //     style: {
-        //       background: colors.neutral.background2,
-        //       border: `1px solid ${colors.neutral.background1}`,
-        //       color: colors.text.normal,
-        //       "&:hover": {
-        //         background: colors.neutral.background2,
-        //       },
-        //     },
-        //   }}
-        //   mantineBottomToolbarProps={{
-        //     style: {
-        //       background: colors.neutral.background2,
-        //       border: `2px solid ${colors.neutral.background1}`,
-        //       color: colors.text.normal,
-        //       "&:hover": {
-        //         background: colors.neutral.background2,
-        //       },
-        //     },
-        //   }}
-        //   mantineFilterSelectProps={{
-        //     style: {
-        //       background: colors.neutral.background2,
-        //       border: `1px solid ${colors.neutral.background1}`,
-        //       color: colors.text.normal,
-        //       "&:hover": {
-        //         background: colors.neutral.background2,
-        //       },
-        //     },
-        //   }}
         enableStickyFooter
         enableStickyHeader
-        mantineTableHeadCellProps={{
-          style: {
-            background: colors.neutral.background1,
-            //border: `5px solid ${colors.neutral.background1}`,
-            color: colors.text.normal,
-            "&:hover": {
-              background: colors.neutral.background2,
-            },
+        state={{ isLoading: isLoading }}
+        localization={{
+          noRecordsToDisplay: "You do not have any Rosters imported",
+          pinToLeft: "Move to start",
+          pinToRight: "Move to end",
+          sortByColumnAsc: "Sort ascending",
+          sortByColumnDesc: "Sort descending",
+          clearSort: "Clear sort",
+          hideColumn: "Hide column",
+          rowsPerPage: "Show",
+        }}
+        initialState={{
+          pagination: {
+            pageSize: 20,
           },
+        }}
+        icons={{
+          IconDotsVertical: IconCaretDownFilled,
+          IconSortDescending: ChevronDownIcon,
+          IconSortAscending: ChevronUpIcon,
+          IconClearAll: CloseIcon,
+        }}
+        renderRowActions={(row) => (
+          <Button
+            variant="outlined"
+            sx={{
+              border: `1px solid ${colors.border.default}`,
+              color: colors.text.normal,
+              borderRadius: "8px",
+              textTransform: "none",
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteOnClick(row);
+            }}
+          >
+            Delete Import
+          </Button>
+        )}
+        renderEmptyRowsFallback={(table) => {
+          return (
+            data.length === 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "65vh",
+                  width: "100%",
+                  textAlign: "center",
+                  background: colors.neutral.background1,
+                }}
+              >
+                <div
+                  style={{
+                    color: colors.text.normal,
+                    fontSize: "14px",
+                    fontWeight: 400,
+                  }}
+                >
+                  You do not have any Rosters imported
+                </div>
+              </div>
+            )
+          );
         }}
         mantineTableHeadRowProps={{
           style: {
-            background: colors.neutral.background2,
+            background: colors.neutral.background1,
             color: colors.text.normal,
+            borderLeft: `10px solid ${colors.neutral.background1}`,
             "&:hover": {
-              background: colors.neutral.background2,
+              background: colors.neutral.background1,
             },
           },
         }}
         mantinePaperProps={{
           style: {
-            background: colors.neutral.background2,
-            border: `5px solid ${colors.neutral.background1}`,
+            background: colors.neutral.background1,
+            border: "none",
             color: colors.text.normal,
             "&:hover": {
-              background: colors.neutral.background2,
+              background: colors.neutral.background1,
             },
+          },
+        }}
+        mantineTableHeadCellProps={{
+          style: {
+            background: colors.neutral.background1,
+            color: colors.text.normal,
           },
         }}
         mantineTableBodyCellProps={{
           style: {
-            background: colors.neutral.background2,
-            border: `5px solid ${colors.neutral.background1}`,
             color: colors.text.normal,
-            "&:hover": {
-              background: colors.neutral.background2,
-            },
+            padding: "12px",
           },
         }}
         mantinePaginationProps={{
+          rowsPerPageOptions: ["20", "50", "100"],
+          withEdges: true,
           style: {
-            background: colors.neutral.background2,
-            border: `1px solid ${colors.neutral.background1}`,
+            background: colors.neutral.background1,
+            border: `10px solid ${colors.neutral.background1}`,
             color: colors.text.normal,
             "&:hover": {
-              background: colors.neutral.background2,
-            },
-          },
-        }}
-        mantineColumnActionsButtonProps={{
-          style: {
-            background: colors.neutral.background2,
-            color: colors.text.normal,
-            "&:hover": {
-              background: colors.neutral.background2,
+              background: colors.neutral.background1,
             },
           },
         }}
         mantineTableContainerProps={{
           style: {
-            background: colors.neutral.background2,
-            //border: `1px solid ${colors.neutral.background1}`,
-            height: "70vh",
-            overflowY: "scroll",
-            color: colors.text.normal,
+            background: colors.neutral.background1,
+            height: "75vh",
             scrollbarWidth: "thin",
             scrollbarColor: `${colors.neutral.background2} ${colors.neutral.background1}`,
-            "&:hover": {
-              background: colors.neutral.background2,
-            },
           },
         }}
-        mantineTopToolbarProps={{
+        mantineTableBodyRowProps={({ row }) => ({
+          onClick: () => {
+            handleRowClick(row);
+          },
           style: {
-            background: colors.neutral.background1,
-            border: `5px solid ${colors.neutral.background1}`,
-            color: colors.text.normal,
-            "&:hover": {
-              background: colors.neutral.background2,
-            },
+            cursor: "pointer",
+            background: colors.neutral.background2,
+            border: `10px solid ${colors.neutral.background1}`,
+            borderRadius: "20px",
           },
-        }}
+        })}
+        renderTopToolbar={(row) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0px 14px 0px 0px",
+            }}
+          >
+            <MRT_TablePagination table={row.table} />
+          </div>
+        )}
       />
       <DeleteModal
         isDeleteDialogOpen={isDeleteDialogOpen}
+        handleClose={handleClose}
         handleDelete={handleDelete}
-        handleClose={handleClose}
-      />
-      <EditModal
-        isEditDialogOpen={isEditDialogOpen}
-        handleEdit={handleEdit}
-        handleClose={handleClose}
       />
     </Fragment>
   );

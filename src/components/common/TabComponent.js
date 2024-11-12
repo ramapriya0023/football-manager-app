@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { Box, Divider, Typography } from "@mui/material";
-import { color, styled } from "@mui/system";
+import React from "react";
+import { Box, Typography } from "@mui/material";
+import { styled } from "@mui/system";
 import TableListIcon from "../../assets/icons/TableListIcon";
 import WidgetIcon from "../../assets/icons/WidgetIcon";
 import colors from "../../constants/colors";
+import { useRoster } from "../../providers/RosterProvider";
 
 const TabContainer = styled(Box)({
   display: "flex",
-  backgroundColor: colors.neutral.background1, // Dark background color
+  backgroundColor: colors.neutral.background1,
   borderRadius: "8px",
   border: `1px solid ${colors.border.default}`,
 });
@@ -32,12 +33,13 @@ const TabIcon = styled("span")({
   alignItems: "center",
 });
 
-const TabComponent = ({ selectedView, setSelectedView }) => {
+const TabComponent = () => {
+  const { selectedView, updateViewLayout } = useRoster();
   return (
     <TabContainer>
       <Tab
         selected={selectedView === "roster"}
-        onClick={() => setSelectedView("roster")}
+        onClick={() => updateViewLayout("roster")}
       >
         <TabIcon>
           <TableListIcon />
@@ -46,7 +48,7 @@ const TabComponent = ({ selectedView, setSelectedView }) => {
       </Tab>
       <Tab
         selected={selectedView === "formation"}
-        onClick={() => setSelectedView("formation")}
+        onClick={() => updateViewLayout("formation")}
       >
         <TabIcon>
           <WidgetIcon />

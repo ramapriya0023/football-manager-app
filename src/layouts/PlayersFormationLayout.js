@@ -1,8 +1,8 @@
 import { Card, styled } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import colors from "../../constants/colors";
-import Field from "../Field/Field";
-import PlayerCard from "../Field/PlayerCard";
+import React, { useState } from "react";
+import colors from "../constants/colors";
+import FieldCard from "../components/Cards/FieldCard";
+import PlayerCard from "../components/Cards/PlayerCard";
 
 const FormationViewContainer = styled(Card)({
   background: colors.neutral.background2,
@@ -13,12 +13,15 @@ const FormationViewContainer = styled(Card)({
   gap: "32px",
 });
 
-const PlayersFormationOverview = () => {
+const PlayersFormationOverview = ({ selectedFile }) => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   return (
     <FormationViewContainer>
-      <Field onPlayerClick={setSelectedPlayer} />
+      <FieldCard
+        onPlayerClick={setSelectedPlayer}
+        selectedFile={selectedFile}
+      />
       <PlayerCard player={selectedPlayer} />
     </FormationViewContainer>
   );

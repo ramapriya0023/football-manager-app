@@ -1,25 +1,24 @@
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   FormControlLabel,
   IconButton,
-  Paper,
   Radio,
   RadioGroup,
+  styled,
   Typography,
 } from "@mui/material";
-import colors from "../../constants/colors";
-import { styled } from "@mui/material";
+import { useEffect, useState } from "react";
 import CloseIcon from "../../assets/icons/CloseIcon";
+import colors from "../../constants/colors";
 import CustomButton from "../common/CustomButton";
-import Input from "../common/Input";
 import DropdownSelect from "../common/DropdownSelect";
-import { useState } from "react";
+import Input from "../common/Input";
+import { updatePlayer } from "../../services/PlayerApiService";
+import { useNationality } from "../../providers/NationalityProvider";
 
 const DialogContainer = styled(Dialog)({
   "& .MuiDialog-paper": {
@@ -41,7 +40,15 @@ const Label = styled(Typography)({
   marginBottom: "8px",
 });
 
-const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
+const EditModal = ({
+  isEditDialogOpen,
+  handleClose,
+  selectedPlayer,
+  reloadGrid,
+  setReloadGrid,
+}) => {
+  const { nationalities } = useNationality();
+
   const [playerDetails, setPlayerDetails] = useState({
     playerName: "",
     jerseyNumber: "",
@@ -49,22 +56,53 @@ const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
     weight: "",
     nationality: "",
     position: "",
-    starter: "yes",
+    starter: false,
+    id: "",
   });
-  const isFormComplete = Object.values(playerDetails).every((value) => value);
 
-  const dummyOptions = [
-    { value: 10, label: "Ten" },
-    { value: 20, label: "Twenty" },
-    { value: 30, label: "Thirty" },
+  const isFormComplete = Object.values(playerDetails).every(
+    (value) => value !== null && value !== undefined && value.length !== 0
+  );
+
+  const playerPositionOptions = [
+    { value: "Goalkeeper", label: "Goalkeeper" },
+    { value: "Defender", label: "Defender" },
+    { value: "Midfielder", label: "Midfielder" },
+    { value: "Forward", label: "Forward" },
   ];
 
   const handleChange = (field, value) => {
-    console.log({ value, field });
-    setPlayerDetails((prevDetails) => ({
-      ...prevDetails,
-      [field]: value,
-    }));
+    if (field === "nationality") {
+      const selectedNationality = nationalities.find(
+        (option) => option.nationality === value
+      );
+
+      setPlayerDetails((prevDetails) => ({
+        ...prevDetails,
+        nationality: selectedNationality?.nationality || "",
+        flagImg: selectedNationality?.flagImg || "",
+      }));
+    } else {
+      setPlayerDetails((prevDetails) => ({
+        ...prevDetails,
+        [field]: value,
+      }));
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const updatedPlayerDetails = {
+        ...playerDetails,
+        starter: playerDetails.starter === "true" || playerDetails.starter,
+      };
+
+      await updatePlayer(updatedPlayerDetails);
+      setReloadGrid(!reloadGrid);
+      handleClose();
+    } catch (error) {
+      console.error("Error updating player:", error);
+    }
   };
 
   const handleOnClose = () => {
@@ -75,10 +113,26 @@ const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
       weight: "",
       nationality: "",
       position: "",
-      starter: "yes",
+      id: "",
+      starter: false,
     });
     handleClose();
   };
+
+  useEffect(() => {
+    if (isEditDialogOpen && selectedPlayer) {
+      setPlayerDetails({
+        playerName: selectedPlayer.playerName || "",
+        jerseyNumber: selectedPlayer.jerseyNumber || "",
+        height: selectedPlayer.height || "",
+        weight: selectedPlayer.weight || "",
+        nationality: selectedPlayer.nationality || "",
+        position: selectedPlayer.position || "",
+        starter: selectedPlayer.starter || false,
+        id: selectedPlayer.id || "",
+      });
+    }
+  }, [isEditDialogOpen, selectedPlayer]);
 
   return (
     <DialogContainer
@@ -110,10 +164,7 @@ const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
               <Input
                 value={playerDetails.playerName}
                 placeholder={"Enter name..."}
-                onChange={(e) => {
-                  console.log(e);
-                  handleChange("playerName", e.target.value);
-                }}
+                onChange={(e) => handleChange("playerName", e.target.value)}
               />
             </Box>
             <Box flex={1}>
@@ -150,7 +201,10 @@ const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
             <Label>Nationality</Label>
             <DropdownSelect
               value={playerDetails.nationality}
-              options={dummyOptions}
+              options={nationalities.map((option) => ({
+                value: option.nationality,
+                label: option.nationality,
+              }))}
               onChange={(e) => handleChange("nationality", e.target.value)}
             />
           </Box>
@@ -159,7 +213,7 @@ const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
             <Label>Position</Label>
             <DropdownSelect
               value={playerDetails.position}
-              options={dummyOptions}
+              options={playerPositionOptions}
               onChange={(e) => handleChange("position", e.target.value)}
             />
           </Box>
@@ -169,10 +223,13 @@ const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
             <RadioGroup
               row
               value={playerDetails.starter}
-              onChange={(e) => handleChange("starter", e.target.value)}
+              onChange={(e) => {
+                console.log(e.target.value);
+                handleChange("starter", e.target.value === "true");
+              }}
             >
               <FormControlLabel
-                value="yes"
+                value="true"
                 control={
                   <Radio
                     sx={{
@@ -189,7 +246,7 @@ const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
                 }}
               />
               <FormControlLabel
-                value="no"
+                value="false"
                 control={
                   <Radio
                     sx={{
@@ -211,10 +268,10 @@ const EditModal = ({ isEditDialogOpen, handleEdit, handleClose }) => {
       </DialogContent>
       <DialogActions>
         <CustomButton
-          text={"Edit player"}
+          text={"Edit Player"}
           type={"primary"}
           disabled={!isFormComplete}
-          onClick={handleEdit}
+          onClick={handleSave}
         />
       </DialogActions>
     </DialogContainer>

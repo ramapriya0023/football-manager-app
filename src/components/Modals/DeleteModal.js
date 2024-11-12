@@ -6,10 +6,11 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  styled,
 } from "@mui/material";
-import colors from "../../constants/colors";
-import { styled } from "@mui/material";
+import { useState } from "react";
 import CloseIcon from "../../assets/icons/CloseIcon";
+import colors from "../../constants/colors";
 
 const DialogContainer = styled(Dialog)({
   "& .MuiDialog-paper": {
@@ -39,7 +40,10 @@ const DeleteButton = styled(Button)({
   borderRadius: "8px",
 });
 
-const DeleteModal = ({ isDeleteDialogOpen, handleDelete, handleClose }) => {
+const DeleteModal = ({ isDeleteDialogOpen, handleClose, handleDelete }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   return (
     <DialogContainer open={isDeleteDialogOpen} maxWidth="xs" fullWidth>
       <StyledDialogTitle>{"Are you sure?"}</StyledDialogTitle>
@@ -56,13 +60,24 @@ const DeleteModal = ({ isDeleteDialogOpen, handleDelete, handleClose }) => {
       </IconButton>
       <DialogContent>
         <StyledDialogContentText>
-          This action cannot be undone
+          This action cannot be undone.
         </StyledDialogContentText>
+        {error && (
+          <StyledDialogContentText style={{ color: colors.primary.red }}>
+            {error}
+          </StyledDialogContentText>
+        )}
       </DialogContent>
       <DialogActions>
-        <CancelButton onClick={handleClose}>Cancel</CancelButton>
-        <DeleteButton onClick={handleDelete} variant="contained">
-          Delete
+        <CancelButton onClick={handleClose} disabled={loading}>
+          Cancel
+        </CancelButton>
+        <DeleteButton
+          onClick={handleDelete}
+          variant="contained"
+          disabled={loading}
+        >
+          {loading ? "Deleting..." : "Delete"}
         </DeleteButton>
       </DialogActions>
     </DialogContainer>

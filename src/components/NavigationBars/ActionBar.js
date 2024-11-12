@@ -1,19 +1,22 @@
-import { Box, IconButton, styled, Toolbar, Typography } from "@mui/material";
+import { IconButton, styled, TextField, Typography } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import colors from "../../constants/colors";
 import SearchBox from "../common/SearchBox";
 import CustomButton from "../common/CustomButton";
 import TabComponent from "../common/TabComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImportIcon from "../../assets/icons/ImportIcon";
-import TableListIcon from "../../assets/icons/TableListIcon";
 import ChevronRightIcon from "../../assets/icons/ChevronRightIcon";
 import MenuIcon from "../../assets/icons/MenuIcon";
 import EditIcon from "../../assets/icons/EditIcon";
+import { useRoster } from "../../providers/RosterProvider";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "../../assets/icons/CloseIcon";
+import { updateFileName } from "../../services/FileApiService";
+
 const drawerWidth = 60;
 
 const HeaderContainer = styled(AppBar)({
-  //height: "60px",
   display: "flex",
   width: `calc(100% - ${drawerWidth}px)`,
   ml: `${drawerWidth}px`,
@@ -39,6 +42,7 @@ const ContentPageLayoutHeader = styled("div")({
 const NavigationHeader = styled("div")({
   display: "flex",
   alignItems: "center",
+  width: "50%",
 });
 
 const ToolbarActions = styled("div")({
@@ -52,17 +56,22 @@ const FileNameContainer = styled("div")({
   alignItems: "center",
   gap: "8px",
   marginLeft: "10px",
+  width: "70%",
 });
 
 const FileName = styled(Typography)({
   color: colors.primary.yellow,
   fontSize: "20px",
   fontWeight: 600,
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  whiteSpace: "nowrap",
 });
 
 const IconContainer = styled("div")({
   display: "flex",
   alignItems: "center",
+  marginRight: "10px",
 });
 
 const ImportNavigation = styled("div")({
@@ -73,39 +82,152 @@ const ImportNavigation = styled("div")({
 const FileNavigation = styled("div")({
   display: "flex",
   alignItems: "center",
-  cursor: "pointer",
+  maxWidth: "100%",
 });
 
-const ActionBar = ({
-  setImportOpen,
-  isImported,
-  setShowImportedFiles,
-  showImportedFiles,
-  selectedView,
-  setSelectedView,
-}) => {
+const ActionBar = () => {
+  const {
+    rosterName,
+    openImportModal,
+    isFileImported,
+    setShowImportedFiles,
+    showImportedFiles,
+    updateRosterName,
+    fileId,
+  } = useRoster();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [newRosterName, setNewRosterName] = useState(rosterName);
+  const [isEdited, setIsEdited] = useState(false);
+  const [isFileNameValid, setIsFileNameValid] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  useEffect(() => {
+    setNewRosterName(rosterName);
+  }, [rosterName]);
+
+  const handleCancelClick = () => {
+    setNewRosterName(rosterName);
+    setIsEditing(false);
+  };
+
+  const handleSaveClick = async () => {
+    try {
+      await updateFileName(fileId, newRosterName);
+
+      updateRosterName(newRosterName);
+      setIsEditing(false);
+      setIsEdited(true);
+    } catch (error) {
+      console.log("error");
+      setIsFileNameValid(false);
+      console.error("Failed to update roster name:", error);
+    }
+  };
+
   return (
     <HeaderContainer position="fixed" elevation={0}>
-      {isImported ? (
+      {!showImportedFiles ? (
         <NavigationHeader>
-          <ImportNavigation onClick={() => setShowImportedFiles(true)}>
+          <ImportNavigation
+            onClick={() => {
+              setShowImportedFiles(true);
+              updateRosterName("");
+              setIsEditing(false);
+              setIsFileNameValid(true);
+            }}
+          >
             <ImportIcon type={"CompletedImportIcon"} />
-            <PageTitle imported={isImported}>Import List</PageTitle>
+            <PageTitle imported={isFileImported}>Import List</PageTitle>
           </ImportNavigation>
-          <IconContainer>
-            <ChevronRightIcon />
-          </IconContainer>
-          <FileNameContainer>
-            <FileNavigation onClick={() => setShowImportedFiles(false)}>
+          {rosterName && (
+            <>
               <IconContainer>
-                <MenuIcon />
+                <ChevronRightIcon />
               </IconContainer>
-              <FileName>{"fileName"}</FileName>
-            </FileNavigation>
-            <IconButton>
-              <EditIcon />
-            </IconButton>
-          </FileNameContainer>
+              <FileNameContainer
+                onMouseEnter={() => {
+                  isEdited && handleMouseEnter();
+                }}
+                onMouseLeave={() => {
+                  isEdited && handleMouseLeave();
+                }}
+              >
+                <FileNavigation>
+                  <IconContainer>
+                    <MenuIcon />
+                  </IconContainer>
+
+                  {isEditing ? (
+                    <TextField
+                      variant="standard"
+                      focused
+                      fullWidth
+                      value={newRosterName}
+                      onChange={(e) => {
+                        setIsFileNameValid(true);
+                        setNewRosterName(e.target.value);
+                      }}
+                      slotProps={{
+                        htmlInput: {
+                          sx: {
+                            color: colors.primary.yellow,
+                            fontSize: "20px",
+                            fontWeight: 600,
+                            textOverflow: "ellipsis",
+                            overflow: "hidden",
+                            whiteSpace: "nowrap",
+                          },
+                        },
+                      }}
+                      sx={{
+                        "& .MuiInputBase-root::after": {
+                          borderBottom: `1px solid ${
+                            isFileNameValid ? colors.border.default : "red"
+                          }`,
+                        },
+                      }}
+                    />
+                  ) : (
+                    <FileName>{rosterName}</FileName>
+                  )}
+                </FileNavigation>
+
+                {isEditing ? (
+                  <>
+                    <IconButton onClick={handleSaveClick}>
+                      <CheckIcon sx={{ color: colors.text.normal }} />
+                    </IconButton>
+                    <IconButton onClick={handleCancelClick}>
+                      <CloseIcon />
+                    </IconButton>
+                  </>
+                ) : !isEdited ? (
+                  <IconButton onClick={handleEditClick}>
+                    <EditIcon />
+                  </IconButton>
+                ) : (
+                  isHovered && (
+                    <IconButton onClick={handleEditClick}>
+                      <EditIcon />
+                    </IconButton>
+                  )
+                )}
+              </FileNameContainer>
+            </>
+          )}
         </NavigationHeader>
       ) : (
         <ContentPageLayoutHeader>
@@ -115,15 +237,12 @@ const ActionBar = ({
       )}
       <ToolbarActions>
         <SearchBox label={"Find Roster"} />
-        {isImported && !showImportedFiles ? (
-          <TabComponent
-            selectedView={selectedView}
-            setSelectedView={setSelectedView}
-          />
+        {isFileImported && !showImportedFiles ? (
+          <TabComponent />
         ) : (
           <CustomButton
             type={"primary"}
-            onClick={() => setImportOpen(true)}
+            onClick={() => openImportModal(true)}
             text={"Import Team"}
           />
         )}

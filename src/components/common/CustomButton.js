@@ -1,7 +1,6 @@
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import colors from "../../constants/colors";
-import { Typography } from "@mui/material";
 
 const PrimaryButton = styled(Button)({
   backgroundColor: colors.primary.yellow,
@@ -12,6 +11,7 @@ const PrimaryButton = styled(Button)({
   padding: "12px 20px 11px 20px",
   borderRadius: "8px",
   height: "44px",
+  textTransform: "none",
   "& .Mui-disabled": {
     color: "white",
   },
@@ -23,6 +23,7 @@ const PrimaryButton = styled(Button)({
 const SecondaryButton = styled(Button)({
   backgroundColor: colors.neutral.background2,
   color: colors.text.normal,
+  textTransform: "none",
   "&:hover": {
     color: colors.text.heading,
   },
@@ -48,7 +49,7 @@ const CustomButton = ({ text, disabled = false, onClick, type }) => {
       </div>
     </PrimaryButton>
   ) : (
-    <SecondaryButton variant="contained" disabled={disabled} onClick={onClick}>
+    <SecondaryButton variant="outlined" disabled={disabled} onClick={onClick}>
       <div
         style={{ color: disabled ? colors.text.disabled : colors.text.heading }}
       >

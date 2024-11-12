@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 import FieldSVG from "../../assets/images/Field.svg";
-import { Popover, styled } from "@mui/material";
-import { playerPositions } from "../../constants/playerTypes";
+import { styled } from "@mui/material";
+import { playerPositions } from "../../constants/playerPositions";
 import { getPlayers } from "../../services/PlayerApiService";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Button,
-} from "@mui/material";
-import StartersValidationModal from "../Modals/StartersValidationModal";
+import colors from "../../constants/colors";
+import RosterEmptyState from "../common/RosterEmptyState";
 
 const FieldContainer = styled("div")({
   position: "relative",
@@ -28,12 +22,16 @@ const PlayerContainer = styled("div")(({ position }) => ({
   cursor: "pointer",
 }));
 
-const PlayerNumber = styled("div")({
-  backgroundColor: "#333",
-  color: "#fff",
+const PlayerNumber = styled("div")(({ isSelected }) => ({
+  backgroundColor: isSelected
+    ? colors.primary.yellow
+    : colors.neutral.background2,
+  color: colors.text.heading,
   padding: "8px",
   borderRadius: "50%",
-  border: "2px solid #fff",
+  border: `2px solid ${
+    isSelected ? colors.primary.yellow : colors.text.normal
+  }`,
   width: "32px",
   height: "32px",
   display: "flex",
@@ -41,7 +39,7 @@ const PlayerNumber = styled("div")({
   justifyContent: "center",
   fontSize: "16px",
   fontWeight: 600,
-});
+}));
 
 const PlayerName = styled("div")({
   fontSize: "0.8rem",
@@ -49,7 +47,7 @@ const PlayerName = styled("div")({
   marginTop: "4px",
 });
 
-const Field = ({ onPlayerClick }) => {
+const Field = ({ onPlayerClick, selectedFile }) => {
   const [players, setPlayers] = useState([]);
   const [errorContent, setErrorContent] = useState({
     errorTitle: "",
@@ -57,7 +55,9 @@ const Field = ({ onPlayerClick }) => {
   });
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [startersData, setStartersData] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null); // Anchor for Popover
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [showEmptyState, setShowEmptyState] = useState(false);
 
   const roleIndexes = {
     Goalkeeper: 0,
@@ -76,15 +76,10 @@ const Field = ({ onPlayerClick }) => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const data = await getPlayers();
+        const data = await getPlayers(selectedFile.id);
 
         if (!data[0].players || data[0].players.length === 0) {
-          setErrorContent({
-            errorTitle: "No player data found",
-            errorMessage: "Please import your roster first",
-          });
-          setAnchorEl(document.getElementById("field-container"));
-          setIsErrorModalOpen(true);
+          setShowEmptyState(true);
           return;
         }
 
@@ -97,7 +92,11 @@ const Field = ({ onPlayerClick }) => {
 
         let startersData = [];
 
-        data[0].players.forEach((player) => {
+        const startersPlayers = data[0].players.filter(
+          (player) => player.starter === true
+        );
+
+        startersPlayers.forEach((player) => {
           if (positionCounts[player.position] !== undefined) {
             positionCounts[player.position]++;
           }
@@ -118,7 +117,6 @@ const Field = ({ onPlayerClick }) => {
 
         let errorMessage = "";
         let errorTitle = "";
-
         if (startersData.length > 0) {
           startersData.forEach((data) => {
             if (data.current < data.required) {
@@ -138,7 +136,9 @@ const Field = ({ onPlayerClick }) => {
           setAnchorEl(document.getElementById("field-container"));
           setIsErrorModalOpen(true);
         } else {
-          setPlayers(data[0].players);
+          setSelectedPlayer(startersPlayers[0]);
+          onPlayerClick(startersPlayers[0]);
+          setPlayers(startersPlayers);
         }
       } catch (error) {
         console.error("Error fetching players:", error);
@@ -151,7 +151,12 @@ const Field = ({ onPlayerClick }) => {
       setIsErrorModalOpen(false);
       setAnchorEl(null);
     };
-  }, []);
+  }, [selectedFile.id]);
+
+  const handlePlayerClick = (player) => {
+    setSelectedPlayer(player);
+    onPlayerClick(player);
+  };
 
   return (
     <>
@@ -167,19 +172,22 @@ const Field = ({ onPlayerClick }) => {
             <PlayerContainer
               key={player.id}
               position={position}
-              onClick={() => onPlayerClick(player)}
+              onClick={() => handlePlayerClick(player)}
             >
-              <PlayerNumber>{player.jerseyNumber}</PlayerNumber>
+              <PlayerNumber isSelected={selectedPlayer?.id === player.id}>
+                {player.jerseyNumber}
+              </PlayerNumber>
               <PlayerName>{player.playerName}</PlayerName>
             </PlayerContainer>
           );
         })}
       </FieldContainer>
-      {isErrorModalOpen && (
+      {(isErrorModalOpen || showEmptyState) && (
         <div
-          style={{ position: "absolute", bottom: "30%", borderRadius: "8px" }}
+          style={{ position: "absolute", bottom: "40%", borderRadius: "8px" }}
         >
-          <StartersValidationModal
+          <RosterEmptyState
+            emptyState={showEmptyState}
             errorContent={errorContent}
             startersData={startersData}
           />

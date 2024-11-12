@@ -1,8 +1,7 @@
 const BASE_URL = "http://localhost:5001/api/roster";
 
 export const getPlayers = async (fileId) => {
-  let id = "683abc46-8877-4a6f-be68-42323a5bce0b";
-  const response = await fetch(`${BASE_URL}/${id}`);
+  const response = await fetch(`${BASE_URL}/${fileId}`);
   if (!response.ok) {
     throw new Error(`Error fetching players: ${response.statusText}`);
   }

@@ -3,7 +3,11 @@ const BASE_URL = "http://localhost:5001/api/file";
 export const getFiles = async () => {
   const response = await fetch(BASE_URL);
   if (!response.ok) {
-    throw new Error(`Error fetching files: ${response.statusText}`);
+    let errorMessage = `Error fetching files: ${response.statusText}`;
+
+    const errorBody = await response.json();
+    errorMessage = errorBody.message || errorMessage;
+    throw new Error(errorMessage);
   }
   return response.json();
 };
@@ -18,7 +22,14 @@ export const uploadFile = async (file) => {
   });
 
   if (!response.ok) {
-    throw new Error(`Error uploading file: ${response.statusText}`);
+    let errorMessage = `Error uploading file: ${response.statusText}`;
+    try {
+      const errorBody = await response.json();
+      errorMessage = errorBody.message || errorMessage;
+    } catch (error) {
+      errorMessage = "JSON parsing failed.";
+    }
+    throw new Error(errorMessage);
   }
   return response.text();
 };

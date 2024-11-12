@@ -44,18 +44,11 @@ const SelectFileButton = styled("div")({
   height: "40px",
 });
 
-const ErrorMessage = styled(Typography)({
-  color: colors.text.error,
-  fontSize: "14px",
-  marginTop: "8px",
-  textAlign: "center",
-});
-
 const HiddenInput = styled("input")({
   display: "none",
 });
 
-const FilePicker = () => {
+const FilePicker = ({ onFileSelect, errorMessage }) => {
   const [fileName, setFileName] = useState("No file selected");
   const [error, setError] = useState("");
 
@@ -64,10 +57,11 @@ const FilePicker = () => {
     if (file) {
       if (file.type === "text/csv") {
         setError("");
+        setFileName(file.name);
+        onFileSelect(file);
       } else {
         setError("Only CSV files are allowed");
       }
-      setFileName(file.name);
     }
   };
 
@@ -91,7 +85,7 @@ const FilePicker = () => {
             <Typography sx={{ color: colors.text.normal }}>{error}</Typography>
           </>
         )}
-        {!error && (
+        {!error && !errorMessage && (
           <Typography sx={{ color: colors.text.muted }}>
             File must be in .csv format
           </Typography>

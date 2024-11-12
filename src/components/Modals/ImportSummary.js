@@ -30,7 +30,7 @@ const ValueTypography = styled(Typography)({
   fontSize: "16px",
 });
 
-const ImportSummary = () => {
+const ImportSummary = ({ summary }) => {
   return (
     <FileSummaryContainer>
       <Typography gutterBottom sx={{ color: colors.text.heading }}>
@@ -39,23 +39,23 @@ const ImportSummary = () => {
       <TableContainer>
         <TableCell>
           <LabelTypography>Total Players</LabelTypography>
-          <Typography>32</Typography>
+          <ValueTypography>{summary.totalPlayers || 0}</ValueTypography>
         </TableCell>
         <TableCell>
           <LabelTypography>Goal Keepers</LabelTypography>
-          <Typography>32</Typography>
+          <ValueTypography>{summary.goalKeepers || 0}</ValueTypography>
         </TableCell>
         <TableCell>
           <LabelTypography>Defenders</LabelTypography>
-          <ValueTypography>32</ValueTypography>
+          <ValueTypography>{summary.defenders || 0}</ValueTypography>
         </TableCell>
         <TableCell>
           <LabelTypography>Mid Fielders</LabelTypography>
-          <ValueTypography>32</ValueTypography>
+          <ValueTypography>{summary.midFielders || 0}</ValueTypography>
         </TableCell>
         <TableCell>
           <LabelTypography>Forwards</LabelTypography>
-          <ValueTypography>32</ValueTypography>
+          <ValueTypography>{summary.forwards || 0}</ValueTypography>
         </TableCell>
       </TableContainer>
     </FileSummaryContainer>
