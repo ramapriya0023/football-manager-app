@@ -45,26 +45,31 @@ const PlayersGrid = ({ selectedFile }) => {
   const [allPlayersData, setAllPlayersData] = useState([]);
   const [filteredPlayersData, setFilteredPlayersData] = useState([]);
   const [reloadGrid, setReloadGrid] = useState(false);
+
   useEffect(() => {
     const fetchPlayersData = async () => {
       setLoading(true);
-      const response = await getPlayers(selectedFile.id);
+      try {
+        const response = await getPlayers(selectedFile.id);
 
-      const rosterData = response[0]?.players;
-      setAllPlayersData(rosterData || []);
-      const uniqueNationalities = Array.from(
-        new Map(
-          rosterData.map((player) => [
-            player.nationality,
-            { nationality: player.nationality, flagImg: player.flagImg },
-          ])
-        ).values()
-      );
+        const rosterData = response[0]?.players;
+        setAllPlayersData(rosterData || []);
+        const uniqueNationalities = Array.from(
+          new Map(
+            rosterData.map((player) => [
+              player.nationality,
+              { nationality: player.nationality, flagImg: player.flagImg },
+            ])
+          ).values()
+        );
 
-      updateNationalities(uniqueNationalities);
+        updateNationalities(uniqueNationalities);
 
-      setFilteredPlayersData(rosterData || []);
-      setLoading(false);
+        setFilteredPlayersData(rosterData || []);
+        setLoading(false);
+      } catch {
+        setLoading(false);
+      }
     };
 
     if (selectedFile && selectedFile.id) {
@@ -183,10 +188,15 @@ const PlayersGrid = ({ selectedFile }) => {
   };
 
   const handleDelete = async () => {
-    await deletePlayer(selectedRow.id);
-    setReloadGrid(!reloadGrid);
-    handleClose();
-    setLoading(false);
+    try {
+      await deletePlayer(selectedRow.id);
+      setReloadGrid(!reloadGrid);
+      setLoading(false);
+      handleClose();
+    } catch {
+      handleClose();
+      setLoading(false);
+    }
   };
 
   return (

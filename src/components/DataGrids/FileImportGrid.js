@@ -96,9 +96,13 @@ const FileImportGrid = ({
   };
 
   const handleDelete = (row) => {
-    deleteFile(selectedRow.id).then(() => {
-      setRefreshFilesData(!refreshFilesData);
-    });
+    deleteFile(selectedRow.id)
+      .then(() => {
+        setRefreshFilesData(!refreshFilesData);
+      })
+      .catch(() => {
+        handleClose();
+      });
     handleClose();
   };
 
