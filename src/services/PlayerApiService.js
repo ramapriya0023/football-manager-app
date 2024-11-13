@@ -1,35 +1,50 @@
-const BASE_URL = "http://localhost:5001/api/roster";
+import { useRoster } from "../providers/RosterContextProvider";
 
-export const getPlayers = async (fileId) => {
-  const response = await fetch(`${BASE_URL}/${fileId}`);
-  if (!response.ok) {
-    throw new Error(`Error fetching players: ${response.statusText}`);
-  }
-  return response.json();
-};
+export const useRosterAPI = () => {
+  const { baseUrl } = useRoster();
+  const FINAL_URL = `${baseUrl}/api/roster`;
 
-export const updatePlayer = async (playerData) => {
-  const response = await fetch(BASE_URL, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(playerData),
-  });
+  const getPlayers = async (fileId) => {
+    const response = await fetch(`${FINAL_URL}/${fileId}`);
+    if (!response.ok) {
+      let errorMessage = `Error fetching players: ${response.statusText}`;
 
-  if (!response.ok) {
-    throw new Error(`Error updating player: ${response.statusText}`);
-  }
-  return response.text();
-};
+      const errorBody = await response.json();
+      errorMessage = errorBody.message || errorMessage;
+      throw new Error(errorMessage);
+    }
+    return response.json();
+  };
 
-export const deletePlayer = async (playerId) => {
-  const response = await fetch(`${BASE_URL}/${playerId}`, {
-    method: "DELETE",
-  });
+  const updatePlayer = async (playerData) => {
+    const response = await fetch(FINAL_URL, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(playerData),
+    });
 
-  if (!response.ok) {
-    throw new Error(`Error deleting player: ${response.statusText}`);
-  }
-  return response.text();
+    if (!response.ok) {
+      let errorMessage = `Error updating players: ${response.statusText}`;
+
+      const errorBody = await response.json();
+      errorMessage = errorBody.message || errorMessage;
+      throw new Error(errorMessage);
+    }
+    return response.text();
+  };
+
+  const deletePlayer = async (playerId) => {
+    const response = await fetch(`${FINAL_URL}/${playerId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error deleting player: ${response.statusText}`);
+    }
+    return response.text();
+  };
+
+  return { getPlayers, updatePlayer, deletePlayer };
 };

@@ -25,6 +25,28 @@ const StyledSelect = styled(Select)({
   "& .MuiSelect-icon": {
     color: "white",
   },
+  "& .MuiSelect-icon": {
+    color: "white",
+  },
+  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    borderColor: colors.border.default,
+  },
+  "&.Mui-focused": {
+    outline: "none",
+    border: "none",
+  },
+});
+
+const StyledMenuItem = styled(MenuItem)({
+  "&.Mui-selected": {
+    backgroundColor: colors.border.default,
+    "&:hover": {
+      backgroundColor: colors.border.default,
+    },
+  },
+  "&:hover": {
+    backgroundColor: colors.border.default,
+  },
 });
 
 const DropdownSelect = ({
@@ -43,11 +65,6 @@ const DropdownSelect = ({
         }
         return selected;
       }}
-      sx={{
-        "&.Mui-focused": {
-          border: "none !important",
-        },
-      }}
       displayEmpty
       inputProps={{ "aria-label": "Without label" }}
       MenuProps={{
@@ -60,9 +77,9 @@ const DropdownSelect = ({
       }}
     >
       {options.map((option, index) => (
-        <MenuItem key={index} value={option.value}>
+        <StyledMenuItem key={index} value={option.value}>
           {option.label}
-        </MenuItem>
+        </StyledMenuItem>
       ))}
     </StyledSelect>
   );

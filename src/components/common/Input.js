@@ -1,8 +1,8 @@
 import { styled } from "@mui/material";
 import colors from "../../constants/colors";
 
-const InputContainer = styled("input")({
-  width: "248px",
+const InputContainer = styled("input")(({ fullWidth }) => ({
+  width: fullWidth ? "100%" : "248px",
   height: "44px",
   padding: "12px 16px 11px 16px",
   borderRadius: "8px",
@@ -13,7 +13,7 @@ const InputContainer = styled("input")({
   },
   color: colors.text.heading,
   background: colors.neutral.background2,
-});
+}));
 
 const Input = ({
   value,
@@ -21,6 +21,7 @@ const Input = ({
   disabled = false,
   placeholder,
   type = "text",
+  fullWidth = false,
 }) => {
   return (
     <InputContainer
@@ -29,6 +30,7 @@ const Input = ({
       type={type}
       placeholder={placeholder}
       onChange={onChange}
+      fullWidth={fullWidth}
     />
   );
 };

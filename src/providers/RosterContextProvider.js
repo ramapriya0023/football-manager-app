@@ -2,13 +2,14 @@ import React, { createContext, useContext, useState } from "react";
 
 const RosterContext = createContext();
 
-export const RosterProvider = ({ children }) => {
+export const RosterContextProvider = ({ children }) => {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isFileImported, setIsFileImported] = useState(false);
   const [rosterName, setRosterName] = useState(null);
   const [selectedView, setSelectedView] = useState("roster");
   const [showImportedFiles, setShowImportedFiles] = useState(true);
   const [searchValue, setSearchValue] = useState("");
+  const [baseUrl, setBaseUrl] = useState("http://localhost:5001");
   const [fileId, setFileId] = useState("");
 
   const selectRoster = (name) => {
@@ -40,6 +41,10 @@ export const RosterProvider = ({ children }) => {
     setFileId(id);
   };
 
+  const updateBaseUrl = (url) => {
+    setBaseUrl(url);
+  };
+
   return (
     <RosterContext.Provider
       value={{
@@ -58,6 +63,8 @@ export const RosterProvider = ({ children }) => {
         updateSearchValue,
         fileId,
         updateFileId,
+        baseUrl,
+        updateBaseUrl,
       }}
     >
       {children}

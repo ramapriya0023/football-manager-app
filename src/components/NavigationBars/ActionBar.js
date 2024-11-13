@@ -9,10 +9,10 @@ import ImportIcon from "../../assets/icons/ImportIcon";
 import ChevronRightIcon from "../../assets/icons/ChevronRightIcon";
 import MenuIcon from "../../assets/icons/MenuIcon";
 import EditIcon from "../../assets/icons/EditIcon";
-import { useRoster } from "../../providers/RosterProvider";
+import { useRoster } from "../../providers/RosterContextProvider";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "../../assets/icons/CloseIcon";
-import { updateFileName } from "../../services/FileApiService";
+import { useFileAPI } from "../../services/FileApiService";
 
 const drawerWidth = 60;
 
@@ -95,6 +95,8 @@ const ActionBar = () => {
     updateRosterName,
     fileId,
   } = useRoster();
+
+  const { updateFileName } = useFileAPI();
 
   const [isEditing, setIsEditing] = useState(false);
   const [newRosterName, setNewRosterName] = useState(rosterName);

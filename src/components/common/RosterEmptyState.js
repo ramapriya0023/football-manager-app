@@ -2,7 +2,7 @@ import { styled } from "@mui/material";
 import WarningIcon from "../../assets/icons/WarningIcon";
 import colors from "../../constants/colors";
 import CustomButton from "./CustomButton";
-import { useRoster } from "../../providers/RosterProvider";
+import { useRoster } from "../../providers/RosterContextProvider";
 
 const Container = styled("div")(({ emptyState }) => ({
   width: emptyState ? "none" : "70%",

@@ -1,34 +1,18 @@
 import React from "react";
 import PageLayout from "./layouts/PageLayout";
-import { MantineProvider } from "@mantine/core";
-import { RosterProvider } from "./providers/RosterProvider";
-import colors from "./constants/colors";
+import { RosterContextProvider } from "./providers/RosterContextProvider";
 import { NationalityProvider } from "./providers/NationalityProvider";
+import ThemeProvider from "./providers/ThemeProvider";
 
 const App = () => {
   return (
-    <MantineProvider
-      theme={{
-        primaryColor: "gray",
-        primaryShade: 7,
-        components: {
-          Text: {
-            styles: {
-              root: {
-                color: colors.text.normal,
-              },
-            },
-          },
-        },
-      }}
-      forceColorScheme="dark"
-    >
+    <ThemeProvider>
       <NationalityProvider>
-        <RosterProvider>
+        <RosterContextProvider>
           <PageLayout />
-        </RosterProvider>
+        </RosterContextProvider>
       </NationalityProvider>
-    </MantineProvider>
+    </ThemeProvider>
   );
 };
 

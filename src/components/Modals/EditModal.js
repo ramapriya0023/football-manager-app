@@ -17,7 +17,7 @@ import colors from "../../constants/colors";
 import CustomButton from "../common/CustomButton";
 import DropdownSelect from "../common/DropdownSelect";
 import Input from "../common/Input";
-import { updatePlayer } from "../../services/PlayerApiService";
+import { useRosterAPI } from "../../services/PlayerApiService";
 import { useNationality } from "../../providers/NationalityProvider";
 
 const DialogContainer = styled(Dialog)({
@@ -48,6 +48,9 @@ const EditModal = ({
   setReloadGrid,
 }) => {
   const { nationalities } = useNationality();
+  const { updatePlayer } = useRosterAPI();
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [playerDetails, setPlayerDetails] = useState({
     playerName: "",
@@ -88,21 +91,25 @@ const EditModal = ({
         [field]: value,
       }));
     }
+    setErrorMessage("");
   };
 
-  const handleSave = async () => {
-    try {
-      const updatedPlayerDetails = {
-        ...playerDetails,
-        starter: playerDetails.starter === "true" || playerDetails.starter,
-      };
+  const handleSave = () => {
+    const updatedPlayerDetails = {
+      ...playerDetails,
+      starter: playerDetails.starter === "true" || playerDetails.starter,
+    };
 
-      await updatePlayer(updatedPlayerDetails);
-      setReloadGrid(!reloadGrid);
-      handleClose();
-    } catch (error) {
-      console.error("Error updating player:", error);
-    }
+    updatePlayer(updatedPlayerDetails)
+      .then(() => {
+        setReloadGrid(!reloadGrid);
+        handleClose();
+      })
+      .catch((err) => {
+        console.log({ err });
+        let message = err.message || "Error while updating player!";
+        setErrorMessage(message);
+      });
   };
 
   const handleOnClose = () => {
@@ -116,6 +123,7 @@ const EditModal = ({
       id: "",
       starter: false,
     });
+    setErrorMessage("");
     handleClose();
   };
 
@@ -266,7 +274,19 @@ const EditModal = ({
           </Box>
         </div>
       </DialogContent>
-      <DialogActions>
+      <DialogActions
+        sx={{
+          padding: "0px 30px 30px 30px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography
+          sx={{ color: colors.primary.red, fontSize: "16px", fontWeight: 400 }}
+        >
+          {errorMessage}
+        </Typography>
         <CustomButton
           text={"Edit Player"}
           type={"primary"}

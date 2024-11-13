@@ -8,13 +8,13 @@ import {
   MRT_TablePagination,
 } from "mantine-react-table";
 import { Fragment, useEffect, useState } from "react";
-import { getPlayers, deletePlayer } from "../../services/PlayerApiService";
+import { useRosterAPI } from "../../services/PlayerApiService";
 import DeleteIcon from "../../assets/icons/DeleteIcon";
 import EditIcon from "../../assets/icons/EditIcon";
 import colors from "../../constants/colors";
 import EditModal from "../Modals/EditModal";
 import DeleteModal from "../Modals/DeleteModal";
-import { useRoster } from "../../providers/RosterProvider";
+import { useRoster } from "../../providers/RosterContextProvider";
 import ChevronDownIcon from "../../assets/icons/ChevronDownIcon";
 import ChevronUpIcon from "../../assets/icons/ChevronUpIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
@@ -40,6 +40,7 @@ const Item = styled("div")({
 const PlayersGrid = ({ selectedFile }) => {
   const { searchValue } = useRoster();
   const { updateNationalities } = useNationality();
+  const { getPlayers, deletePlayer } = useRosterAPI();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -51,29 +52,24 @@ const PlayersGrid = ({ selectedFile }) => {
 
   useEffect(() => {
     const fetchPlayersData = async () => {
-      try {
-        setLoading(true);
-        const response = await getPlayers(selectedFile.id);
+      setLoading(true);
+      const response = await getPlayers(selectedFile.id);
 
-        const rosterData = response[0]?.players;
-        setAllPlayersData(rosterData || []);
-        const uniqueNationalities = Array.from(
-          new Map(
-            rosterData.map((player) => [
-              player.nationality,
-              { nationality: player.nationality, flagImg: player.flagImg },
-            ])
-          ).values()
-        );
+      const rosterData = response[0]?.players;
+      setAllPlayersData(rosterData || []);
+      const uniqueNationalities = Array.from(
+        new Map(
+          rosterData.map((player) => [
+            player.nationality,
+            { nationality: player.nationality, flagImg: player.flagImg },
+          ])
+        ).values()
+      );
 
-        updateNationalities(uniqueNationalities);
+      updateNationalities(uniqueNationalities);
 
-        setFilteredPlayersData(rosterData || []);
-      } catch (err) {
-        setError("Failed to fetch players data");
-      } finally {
-        setLoading(false);
-      }
+      setFilteredPlayersData(rosterData || []);
+      setLoading(false);
     };
 
     if (selectedFile && selectedFile.id) {
@@ -82,8 +78,10 @@ const PlayersGrid = ({ selectedFile }) => {
   }, [selectedFile, reloadGrid]);
 
   useEffect(() => {
-    const filteredData = allPlayersData.filter((player) =>
-      player.playerName.toLowerCase().includes(searchValue.toLowerCase())
+    const filteredData = allPlayersData.filter(
+      (player) =>
+        player.playerName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        player.position.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredPlayersData(filteredData);
   }, [searchValue, allPlayersData]);
@@ -190,21 +188,11 @@ const PlayersGrid = ({ selectedFile }) => {
   };
 
   const handleDelete = async () => {
-    try {
-      await deletePlayer(selectedRow.id);
-      setReloadGrid(!reloadGrid);
-      handleClose();
-    } catch (err) {
-      console.error("Failed to delete player:", err);
-      setError("Failed to delete player. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    await deletePlayer(selectedRow.id);
+    setReloadGrid(!reloadGrid);
+    handleClose();
+    setLoading(false);
   };
-
-  if (error) {
-    return <div style={{ color: "red", textAlign: "center" }}>{error}</div>;
-  }
 
   return (
     <Fragment>
@@ -225,6 +213,42 @@ const PlayersGrid = ({ selectedFile }) => {
         enableColumnFilters={false}
         manualSorting={false}
         enableSorting={true}
+        displayColumnDefOptions={{
+          "mrt-row-actions": {
+            Header: ({ table }) => {
+              return (
+                <MRT_ShowHideColumnsButton
+                  table={table}
+                  color={colors.text.heading}
+                />
+              );
+            },
+
+            mantineTableHeadCellProps: {
+              style: {
+                padding: "10px",
+                background: colors.neutral.background1,
+                borderLeft: `1px solid ${colors.neutral.background1}`,
+              },
+            },
+            mantineTableBodyRowProps: {
+              style: {
+                background: colors.neutral.background2,
+                "&:hover": {
+                  background: colors.neutral.background1,
+                },
+              },
+            },
+            mantineTableBodyCellProps: {
+              style: {
+                background: colors.neutral.background2,
+                "&:hover": {
+                  background: colors.neutral.background1,
+                },
+              },
+            },
+          },
+        }}
         defaultColumn={{
           enablePinning: true,
           enableSorting: false,
@@ -250,6 +274,7 @@ const PlayersGrid = ({ selectedFile }) => {
             cleanSheets: false,
             saves: false,
           },
+          columnPinning: { right: ["mrt-row-actions"] },
           sorting: [{ id: "playerName", desc: false }],
         }}
         icons={{
@@ -309,13 +334,18 @@ const PlayersGrid = ({ selectedFile }) => {
               padding: "0px 14px 0px 0px",
             }}
           >
-            <MRT_TablePagination table={row.table} />
-            <MRT_ShowHideColumnsButton table={row.table} />
+            <MRT_TablePagination
+              table={row.table}
+              gap={"50"}
+              withEdges={true}
+            />
           </div>
         )}
         mantinePaginationProps={{
-          withEdges: true,
           rowsPerPageOptions: ["20", "50", "100"],
+          style: {
+            background: colors.neutral.background1,
+          },
         }}
         mantinePaperProps={{
           style: {
@@ -358,6 +388,9 @@ const PlayersGrid = ({ selectedFile }) => {
             background: colors.neutral.background2,
             border: `10px solid ${colors.neutral.background1}`,
             borderRadius: "20px",
+            "&:hover": {
+              background: colors.neutral.background2,
+            },
           },
         }}
       />

@@ -4,7 +4,7 @@ import { styled } from "@mui/system";
 import TableListIcon from "../../assets/icons/TableListIcon";
 import WidgetIcon from "../../assets/icons/WidgetIcon";
 import colors from "../../constants/colors";
-import { useRoster } from "../../providers/RosterProvider";
+import { useRoster } from "../../providers/RosterContextProvider";
 
 const TabContainer = styled(Box)({
   display: "flex",

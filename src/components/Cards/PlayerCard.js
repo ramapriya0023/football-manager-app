@@ -236,8 +236,8 @@ const PlayerCard = ({ player }) => {
             <div>
               <StatNumber>
                 {player.position === "Goalkeeper"
-                  ? player.cleanSheets
-                  : player.goals}
+                  ? player.cleanSheets || 0
+                  : player.goals || 0}
               </StatNumber>
               <StatLabel>{`${
                 player.position === "Goalkeeper" ? "Clean Sheets" : "Goals"
@@ -246,8 +246,8 @@ const PlayerCard = ({ player }) => {
             <div>
               <StatNumber>
                 {player.position === "Goalkeeper"
-                  ? player.saves
-                  : player.assists}
+                  ? player.saves || 0
+                  : player.assists || 0}
               </StatNumber>
               <StatLabel>{`${
                 player.position === "Goalkeeper" ? "Saves" : "Assists"

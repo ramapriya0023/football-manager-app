@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import FieldSVG from "../../assets/images/Field.svg";
 import { styled } from "@mui/material";
 import { playerPositions } from "../../constants/playerPositions";
-import { getPlayers } from "../../services/PlayerApiService";
+import { useRosterAPI } from "../../services/PlayerApiService";
 import colors from "../../constants/colors";
 import RosterEmptyState from "../common/RosterEmptyState";
 
@@ -49,6 +49,7 @@ const PlayerName = styled("div")({
 
 const Field = ({ onPlayerClick, selectedFile }) => {
   const [players, setPlayers] = useState([]);
+  const { getPlayers } = useRosterAPI();
   const [errorContent, setErrorContent] = useState({
     errorTitle: "",
     errorMessage: "",
@@ -136,8 +137,11 @@ const Field = ({ onPlayerClick, selectedFile }) => {
           setAnchorEl(document.getElementById("field-container"));
           setIsErrorModalOpen(true);
         } else {
-          setSelectedPlayer(startersPlayers[0]);
-          onPlayerClick(startersPlayers[0]);
+          const goalkeeper = startersPlayers.find(
+            (player) => player.position === "Goalkeeper"
+          );
+          setSelectedPlayer(goalkeeper);
+          onPlayerClick(goalkeeper);
           setPlayers(startersPlayers);
         }
       } catch (error) {

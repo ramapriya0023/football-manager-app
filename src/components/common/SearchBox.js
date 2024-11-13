@@ -1,7 +1,7 @@
 import { Button, IconButton, InputBase, Paper, styled } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import colors from "../../constants/colors";
-import { useRoster } from "../../providers/RosterProvider";
+import { useRoster } from "../../providers/RosterContextProvider";
 import { useState } from "react";
 import CloseIcon from "../../assets/icons/CloseIcon";
 
@@ -47,6 +47,10 @@ const SearchBox = () => {
             event.preventDefault();
             setIsSearched(true);
             updateSearchValue(searchText);
+          } else if (event.key === "Escape") {
+            setSearchText("");
+            setIsSearched(false);
+            updateSearchValue("");
           }
         }}
       />

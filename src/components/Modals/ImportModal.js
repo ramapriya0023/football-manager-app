@@ -15,8 +15,8 @@ import CustomButton from "../common/CustomButton";
 import ImportSummary from "./ImportSummary";
 import Papa from "papaparse";
 import { useState } from "react";
-import { useRoster } from "../../providers/RosterProvider";
-import { uploadFile } from "../../services/FileApiService";
+import { useRoster } from "../../providers/RosterContextProvider";
+import { useFileAPI } from "../../services/FileApiService";
 
 const StyledDialog = styled(Dialog)({
   padding: "24px",
@@ -45,6 +45,7 @@ const ImportModal = ({
   const [summary, setSummary] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const { updateIsFileImported } = useRoster();
+  const { uploadFile } = useFileAPI();
 
   const handleFileChange = (uploadedFile) => {
     setFile(uploadedFile);

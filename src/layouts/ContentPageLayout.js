@@ -1,11 +1,11 @@
 import { Box, Toolbar } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import FileImportGrid from "../components/DataGrids/FileImportGrid";
 import ImportModal from "../components/Modals/ImportModal";
 import PlayersFormationLayout from "./PlayersFormationLayout";
 import colors from "../constants/colors";
 import PlayersGrid from "../components/DataGrids/PlayersGrid";
-import { useRoster } from "../providers/RosterProvider";
+import { useRoster } from "../providers/RosterContextProvider";
 
 const ContentPageLayout = ({}) => {
   const [refreshFilesData, setRefreshFilesData] = useState(false);
@@ -13,10 +13,6 @@ const ContentPageLayout = ({}) => {
 
   const { selectedView, showImportedFiles, setShowImportedFiles } = useRoster();
   console.log({ showImportedFiles });
-
-  useEffect(() => {
-    setRefreshFilesData(true);
-  }, [showImportedFiles]);
 
   return (
     <Box
@@ -41,6 +37,8 @@ const ContentPageLayout = ({}) => {
         <FileImportGrid
           selectedRow={selectedRow}
           setSelectedRow={setSelectedRow}
+          refreshFilesData={refreshFilesData}
+          setRefreshFilesData={setRefreshFilesData}
         />
       ) : selectedView === "roster" ? (
         <PlayersGrid selectedFile={selectedRow} />

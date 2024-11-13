@@ -2,44 +2,30 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import { Button, styled, Typography } from "@mui/material";
 import { IconCaretDownFilled } from "@tabler/icons-react";
-import {
-  MantineReactTable,
-  MRT_ShowHideColumnsButton,
-  MRT_TablePagination,
-} from "mantine-react-table";
+import { MantineReactTable, MRT_TablePagination } from "mantine-react-table";
 import "mantine-react-table/styles.css";
 import { Fragment, useEffect, useState } from "react";
-import { getFiles, deleteFile } from "../../services/FileApiService";
+import { useFileAPI } from "../../services/FileApiService";
 import colors from "../../constants/colors";
 import DeleteModal from "../Modals/DeleteModal";
-import { useRoster } from "../../providers/RosterProvider";
+import { useRoster } from "../../providers/RosterContextProvider";
 import CloseIcon from "../../assets/icons/CloseIcon";
 import ChevronUpIcon from "../../assets/icons/ChevronUpIcon";
 import ChevronDownIcon from "../../assets/icons/ChevronDownIcon";
 
-const MenuHeader = styled(Typography)({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: colors.text.heading,
-  paddingTop: "10px",
-  fontSize: "18px",
-  fontWeight: 600,
-});
-
-const Item = styled("div")({
-  display: "flex",
-  gap: "8px",
-  padding: "8px",
-});
-
-const FileImportGrid = ({ selectedRow, setSelectedRow }) => {
+const FileImportGrid = ({
+  selectedRow,
+  setSelectedRow,
+  refreshFilesData,
+  setRefreshFilesData,
+}) => {
   const [data, setData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  const { getFiles, deleteFile } = useFileAPI();
   const {
     updateRosterName,
     updateViewLayout,
@@ -74,7 +60,7 @@ const FileImportGrid = ({ selectedRow, setSelectedRow }) => {
     };
 
     fetchData();
-  }, [showImportedFiles]);
+  }, [showImportedFiles, refreshFilesData]);
 
   useEffect(() => {
     const filteredData = allData.filter((item) =>
@@ -93,6 +79,7 @@ const FileImportGrid = ({ selectedRow, setSelectedRow }) => {
     {
       accessorKey: "createdAt",
       header: "Import Date",
+      enableSorting: true,
       Cell: ({ cell }) => {
         const date = new Date(cell.getValue());
         return date.toLocaleDateString("en-US", {
@@ -114,7 +101,7 @@ const FileImportGrid = ({ selectedRow, setSelectedRow }) => {
 
   const handleDelete = (row) => {
     deleteFile(selectedRow.id).then(() => {
-      setAllData((prev) => prev.filter((file) => file.id !== selectedRow.id));
+      setRefreshFilesData(!refreshFilesData);
     });
     handleClose();
   };
@@ -147,7 +134,13 @@ const FileImportGrid = ({ selectedRow, setSelectedRow }) => {
         enableColumnFilters={false}
         enableStickyFooter
         enableStickyHeader
+        manualSorting={false}
+        enableSorting={true}
         state={{ isLoading: isLoading }}
+        defaultColumn={{
+          enablePinning: true,
+          enableSorting: false,
+        }}
         localization={{
           noRecordsToDisplay: "You do not have any Rosters imported",
           pinToLeft: "Move to start",
