@@ -2,7 +2,7 @@ import { Button, IconButton, InputBase, Paper, styled } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import colors from "../../constants/colors";
 import { useRoster } from "../../providers/RosterContextProvider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CloseIcon from "../../assets/icons/CloseIcon";
 
 const InputContainer = styled(Paper)({
@@ -27,6 +27,12 @@ const SearchBox = () => {
   const { updateSearchValue, showImportedFiles } = useRoster();
   const [searchText, setSearchText] = useState("");
   const [isSearched, setIsSearched] = useState(false);
+
+  useEffect(() => {
+    setSearchText("");
+    setIsSearched(false);
+    updateSearchValue("");
+  }, [showImportedFiles]);
 
   return (
     <InputContainer component="form">
