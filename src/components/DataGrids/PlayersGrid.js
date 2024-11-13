@@ -19,7 +19,7 @@ import ChevronDownIcon from "../../assets/icons/ChevronDownIcon";
 import ChevronUpIcon from "../../assets/icons/ChevronUpIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
 import { useNationality } from "../../providers/NationalityProvider";
-import RosterEmptyState from "../common/RosterEmptyState";
+import RosterStatusComponent from "../common/RosterStatusComponent";
 
 const MenuHeader = styled(Typography)({
   display: "flex",
@@ -42,7 +42,6 @@ const PlayersGrid = ({ selectedFile }) => {
   const { updateNationalities } = useNationality();
   const { getPlayers, deletePlayer } = useRosterAPI();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -315,12 +314,12 @@ const PlayersGrid = ({ selectedFile }) => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: "64vh",
+                  height: "70vh",
                   width: "100%",
                   textAlign: "center",
                 }}
               >
-                <RosterEmptyState emptyState={true} />
+                <RosterStatusComponent emptyState={true} />
               </div>
             )
           );
@@ -378,7 +377,7 @@ const PlayersGrid = ({ selectedFile }) => {
         mantineTableContainerProps={{
           style: {
             background: colors.neutral.background1,
-            height: "75vh",
+            height: "79vh",
             scrollbarWidth: "thin",
             scrollbarColor: `${colors.neutral.background2} ${colors.neutral.background1}`,
           },

@@ -3,6 +3,7 @@ import { useRoster } from "../providers/RosterContextProvider";
 export const useFileAPI = () => {
   const { baseUrl } = useRoster();
   const FINAL_URL = `${baseUrl}/api/file`;
+
   const getFiles = async () => {
     const response = await fetch(FINAL_URL);
     if (!response.ok) {

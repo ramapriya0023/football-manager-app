@@ -4,7 +4,7 @@ import { styled } from "@mui/material";
 import { playerPositions } from "../../constants/playerPositions";
 import { useRosterAPI } from "../../services/PlayerApiService";
 import colors from "../../constants/colors";
-import RosterEmptyState from "../common/RosterEmptyState";
+import RosterStatusComponent from "../common/RosterStatusComponent";
 
 const FieldContainer = styled("div")({
   position: "relative",
@@ -56,7 +56,6 @@ const Field = ({ onPlayerClick, selectedFile }) => {
   });
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [startersData, setStartersData] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [showEmptyState, setShowEmptyState] = useState(false);
 
@@ -134,7 +133,6 @@ const Field = ({ onPlayerClick, selectedFile }) => {
             errorMessage,
           });
           setStartersData(startersData);
-          setAnchorEl(document.getElementById("field-container"));
           setIsErrorModalOpen(true);
         } else {
           const goalkeeper = startersPlayers.find(
@@ -153,7 +151,6 @@ const Field = ({ onPlayerClick, selectedFile }) => {
 
     return () => {
       setIsErrorModalOpen(false);
-      setAnchorEl(null);
     };
   }, [selectedFile.id]);
 
@@ -164,7 +161,7 @@ const Field = ({ onPlayerClick, selectedFile }) => {
 
   return (
     <>
-      <FieldContainer id="field-container">
+      <FieldContainer>
         {players.map((player) => {
           const role = player.position;
           const positionArray = playerPositions[role];
@@ -188,9 +185,9 @@ const Field = ({ onPlayerClick, selectedFile }) => {
       </FieldContainer>
       {(isErrorModalOpen || showEmptyState) && (
         <div
-          style={{ position: "absolute", bottom: "40%", borderRadius: "8px" }}
+          style={{ position: "absolute", bottom: "35%", borderRadius: "8px" }}
         >
-          <RosterEmptyState
+          <RosterStatusComponent
             emptyState={showEmptyState}
             errorContent={errorContent}
             startersData={startersData}
