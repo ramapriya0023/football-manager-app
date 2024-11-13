@@ -73,7 +73,6 @@ const FileImportGrid = ({
     {
       accessorKey: "fileName",
       header: "Roster Name",
-
       size: 400,
     },
     {
@@ -134,6 +133,7 @@ const FileImportGrid = ({
         enableColumnFilters={false}
         enableStickyFooter
         enableStickyHeader
+        enableColumnActions={false}
         manualSorting={false}
         enableSorting={true}
         state={{ isLoading: isLoading }}

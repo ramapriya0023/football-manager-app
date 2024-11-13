@@ -2,11 +2,7 @@ import styled from "@emotion/styled";
 import { Menu } from "@mantine/core";
 import { Typography } from "@mui/material";
 import { IconCaretDownFilled, IconPlus } from "@tabler/icons-react";
-import {
-  MantineReactTable,
-  MRT_ShowHideColumnsButton,
-  MRT_TablePagination,
-} from "mantine-react-table";
+import { MantineReactTable, MRT_TablePagination } from "mantine-react-table";
 import { Fragment, useEffect, useState } from "react";
 import { useRosterAPI } from "../../services/PlayerApiService";
 import DeleteIcon from "../../assets/icons/DeleteIcon";
@@ -20,6 +16,7 @@ import ChevronUpIcon from "../../assets/icons/ChevronUpIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
 import { useNationality } from "../../providers/NationalityProvider";
 import RosterStatusComponent from "../common/RosterStatusComponent";
+import ColumnVisibilityMenuCard from "../Cards/ColumnVisibilityMenuCard";
 
 const MenuHeader = styled(Typography)({
   display: "flex",
@@ -48,7 +45,6 @@ const PlayersGrid = ({ selectedFile }) => {
   const [allPlayersData, setAllPlayersData] = useState([]);
   const [filteredPlayersData, setFilteredPlayersData] = useState([]);
   const [reloadGrid, setReloadGrid] = useState(false);
-
   useEffect(() => {
     const fetchPlayersData = async () => {
       setLoading(true);
@@ -214,38 +210,7 @@ const PlayersGrid = ({ selectedFile }) => {
         enableSorting={true}
         displayColumnDefOptions={{
           "mrt-row-actions": {
-            Header: ({ table }) => {
-              return (
-                <MRT_ShowHideColumnsButton
-                  table={table}
-                  color={colors.text.heading}
-                />
-              );
-            },
-
-            mantineTableHeadCellProps: {
-              style: {
-                padding: "10px",
-                background: colors.neutral.background1,
-                borderLeft: `1px solid ${colors.neutral.background1}`,
-              },
-            },
-            mantineTableBodyRowProps: {
-              style: {
-                background: colors.neutral.background2,
-                "&:hover": {
-                  background: colors.neutral.background1,
-                },
-              },
-            },
-            mantineTableBodyCellProps: {
-              style: {
-                background: colors.neutral.background2,
-                "&:hover": {
-                  background: colors.neutral.background1,
-                },
-              },
-            },
+            Header: ({ table }) => <ColumnVisibilityMenuCard table={table} />,
           },
         }}
         defaultColumn={{
