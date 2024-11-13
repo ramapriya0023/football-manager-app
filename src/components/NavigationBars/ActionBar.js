@@ -133,7 +133,6 @@ const ActionBar = () => {
       setIsEditing(false);
       setIsEdited(true);
     } catch (error) {
-      console.log("error");
       setIsFileNameValid(false);
       console.error("Failed to update roster name:", error);
     }

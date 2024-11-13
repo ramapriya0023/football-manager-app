@@ -41,7 +41,6 @@ const FileImportGrid = ({
       try {
         setIsLoading(true);
         const response = await getFiles();
-        console.log({ response });
         if (response.length === 0) {
           updateIsFileImported(false);
         }
@@ -49,12 +48,10 @@ const FileImportGrid = ({
         updateIsFileImported(true);
         setAllData(response);
         setData(response);
-        console.log("testing1");
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching files:", error);
       } finally {
-        console.log("testing2");
         setIsLoading(false);
       }
     };
@@ -106,7 +103,6 @@ const FileImportGrid = ({
   };
 
   const handleRowClick = (row) => {
-    console.log({ row });
     if (!isDeleteDialogOpen) {
       setSelectedRow(row.original);
       updateViewLayout("roster");
@@ -115,7 +111,6 @@ const FileImportGrid = ({
       updateFileId(row.original.id);
     }
   };
-  console.log({ isLoading });
   return (
     <Fragment>
       <MantineReactTable
@@ -187,7 +182,7 @@ const FileImportGrid = ({
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: "65vh",
+                  height: "69vh",
                   width: "100%",
                   textAlign: "center",
                   background: colors.neutral.background1,

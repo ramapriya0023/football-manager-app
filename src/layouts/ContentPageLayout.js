@@ -12,7 +12,6 @@ const ContentPageLayout = ({}) => {
   const [selectedRow, setSelectedRow] = useState([]);
 
   const { selectedView, showImportedFiles, setShowImportedFiles } = useRoster();
-  console.log({ showImportedFiles });
 
   return (
     <Box
