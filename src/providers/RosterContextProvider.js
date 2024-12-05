@@ -9,7 +9,7 @@ export const RosterContextProvider = ({ children }) => {
   const [selectedView, setSelectedView] = useState("roster");
   const [showImportedFiles, setShowImportedFiles] = useState(true);
   const [searchValue, setSearchValue] = useState("");
-  const [baseUrl, setBaseUrl] = useState("http://localhost:5001");
+  const [baseUrl, setBaseUrl] = useState("");
   const [fileId, setFileId] = useState("");
 
   const selectRoster = (name) => {
