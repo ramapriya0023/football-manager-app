@@ -9,7 +9,7 @@ import { useRoster } from "../providers/RosterContextProvider";
 import { useState } from "react";
 
 const PageLayout = () => {
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(true);
   const [popupOpen, setPopupOpen] = useState(true);
   const { updateBaseUrl, baseUrl } = useRoster();
 
