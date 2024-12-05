@@ -3,9 +3,3 @@
   to = "http://35.180.225.145:5001/api/:splat"
   status = 200
   force = true
-
-[[redirects]]
-  from = "/api/file/*"
-  to = "http://35.180.225.145:5001/api/file:splat"
-  status = 200
-  force = true

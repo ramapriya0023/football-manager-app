@@ -1,3 +1,0 @@
-/api/* http://35.180.225.145:5001/api/:splat 200!
-/api/file/* http://35.180.225.145:5001/api/file:splat 200!
-/* /index.html 200
