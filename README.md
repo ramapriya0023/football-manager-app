@@ -7,8 +7,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 https://charming-figolla-bd83ba.netlify.app/
 
-Default Backend Base URL is configured as ```http://localhost:5001``` 
-
 ### To run frontend app in development mode
 ```bash
 git clone https://github.com/ramapriya0023/football-manager-app.git
